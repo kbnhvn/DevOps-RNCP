@@ -5,7 +5,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce                    # Mode d'accès au volume persistant
-  storageClassName: local-path         # Classe de stockage utilisée (à voir si modification requise)
+  storageClassName: efs-sc
+  volumeName: efs-pv         
   resources:
     requests:
       storage: {{ .Values.elasticsearch.storage.capacity }}                    # Capacité de stockage demandée pour le volume

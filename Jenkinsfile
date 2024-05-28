@@ -1,4 +1,11 @@
 pipeline {
+    agent {
+        kubernetes {
+            inheritFrom 'docker-agent-template'
+            label 'docker'
+            defaultContainer 'jnlp'
+        }
+    }
     environment {
         DOCKER_ID = "kbnhvn" // replace this with your docker-id
         DOCKER_IMAGE_DATA = "datafetcher"
@@ -6,45 +13,14 @@ pipeline {
         DOCKER_IMAGE_WEB_PROD = "web-prod"
         DOCKER_IMAGE_WEBSERVER = "webserver"
         EXTERNAL_API_URL = "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/qualite-de-lair-france/records?limit=-1"
-        DEV_HOSTNAME = "dev.fastapi-traefik.cloudns.ch"
-        PROD_HOSTNAME = "prod.fastapi-traefik.cloudns.ch"
+        DEV_HOSTNAME = "dev.kbnhvn-projetc.eu"
+        PROD_HOSTNAME = "prod.kbnhvn-projetc.eu"
         DOCKER_TAG = "v.${BUILD_ID}.0" // we will tag our images with the current build in order to increment the value by 1 with each new build
 
         // SECRETS
         SECRET_KEY = credentials("SECRET_KEY")
         PGADMIN_CREDENTIALS = credentials("PGADMIN_CREDENTIALS")
         DB_CREDENTIALS = credentials("DB_CREDENTIALS")
-    }
-    agent {
-        kubernetes {
-            label 'docker'
-            defaultContainer 'jnlp'
-            yaml """
-kind: Pod
-apiVersion: v1
-metadata:
-  labels:
-    some-label: docker
-spec:
-  serviceAccountName: jenkins-admin
-  containers:
-  - name: jnlp
-    image: jenkins/inbound-agent
-    args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-  - name: docker
-    image: docker:latest
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-    - name: docker-socket
-      mountPath: /var/run/docker.sock
-  volumes:
-  - name: docker-socket
-    hostPath:
-      path: /var/run/docker.sock
-"""
-        }
     }
     stages {
         stage('Docker Build') {
@@ -255,7 +231,7 @@ spec:
         }
         stage('Docker Push') {
             environment {
-                DOCKER_PASS = credentials("DOCKER_HUB_PASS") // we retrieve  docker password from secret text called docker_hub_pass saved on jenkins
+                DOCKER_PASS = credentials("DOCKER_HUB_PASS") // we retrieve docker password from secret text called docker_hub_pass saved on jenkins
             }
             parallel {
                 stage('Push data Image') {
@@ -333,7 +309,7 @@ spec:
         }
         stage('Deploiement en dev') {
             environment {
-                KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+                KUBECONFIG = credentials("config") // we retrieve kubeconfig from secret file called config saved on jenkins
                 FULL_REPOSITORY = "${env.DOCKER_ID}/${env.DOCKER_IMAGE_WEB_DEV}"
                 NAMESPACE = "dev"
                 ROLE_NAME = "traefik-role-dev"
@@ -389,7 +365,7 @@ spec:
         }
         stage('Deploiement en prod') {
             environment {
-                KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+                KUBECONFIG = credentials("config") // we retrieve kubeconfig from secret file called config saved on jenkins
                 FULL_REPOSITORY = "${env.DOCKER_ID}/${env.DOCKER_IMAGE_WEB_PROD}"
                 NAMESPACE = "prod"
                 ROLE_NAME = "traefik-role-prod"

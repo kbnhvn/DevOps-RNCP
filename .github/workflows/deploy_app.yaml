@@ -20,6 +20,11 @@ jobs:
       DEV_HOSTNAME: "dev.kbnhvn-projetc.eu"
       PROD_HOSTNAME: "app.kbnhvn-projetc.eu"
       DOCKER_TAG: "v.${{ github.run_number }}.0"
+      SECRET_KEY: "${{ secrets.SECRET_KEY }}"
+      PGADMIN_CREDENTIALS_USR: "${{ secrets.PGADMIN_CREDENTIALS_USR }}"
+      PGADMIN_CREDENTIALS_PSW: "${{ secrets.PGADMIN_CREDENTIALS_PSW }}"
+      DB_CREDENTIALS_USR: "${{ secrets.DB_CREDENTIALS_USR }}"
+      DB_CREDENTIALS_PSW: "${{ secrets.DB_CREDENTIALS_PSW }}"
 
     steps:
     - name: Checkout code
@@ -163,6 +168,12 @@ jobs:
     - name: Deploy to Kubernetes (dev)
       if: github.ref == 'refs/heads/develop'
       run: |
+        ENCODED_SECRET_KEY=$(echo -n "$SECRET_KEY" | base64)
+        ENCODED_PGADMIN_CREDENTIALS_USR=$(echo -n "$PGADMIN_CREDENTIALS_USR" | base64)
+        ENCODED_PGADMIN_CREDENTIALS_PSW=$(echo -n "$PGADMIN_CREDENTIALS_PSW" | base64)
+        ENCODED_DB_CREDENTIALS_USR=$(echo -n "$DB_CREDENTIALS_USR" | base64)
+        ENCODED_DB_CREDENTIALS_PSW=$(echo -n "$DB_CREDENTIALS_PSW" | base64)
+
         cp fastapi-traefik/values.yaml values.yml
         
         yq eval '.namespace = "dev"' -i values.yml
@@ -173,11 +184,11 @@ jobs:
         yq eval '.ingress.host = $DEV_HOSTNAME' -i values.yml
         yq eval '.role.name = "traefik-role-dev"' -i values.yml
         yq eval '.roleBinding.name = "traefik-role-binding-dev"' -i values.yml
-        yq eval '.secrets.web.secret_key = "'$(echo -n "${{ secrets.SECRET_KEY }}" | base64)'"' -i values.yml
-        yq eval '.secrets.pgadmin.email = "'$(echo -n "${{ secrets.PGADMIN_CREDENTIALS_USR }}" | base64)'"' -i values.yml
-        yq eval '.secrets.pgadmin.password = "'$(echo -n "${{ secrets.PGADMIN_CREDENTIALS_PSW }}" | base64)'"' -i values.yml
-        yq eval '.secrets.db.user = "'$(echo -n "${{ secrets.DB_CREDENTIALS_USR }}" | base64)'"' -i values.yml
-        yq eval '.secrets.db.password = "'$(echo -n "${{ secrets.DB_CREDENTIALS_PSW }}" | base64)'"' -i values.yml
+        yq eval '.secrets.web.secret_key = $ENCODED_SECRET_KEY' -i values.yml
+        yq eval '.secrets.pgadmin.email = $ENCODED_PGADMIN_CREDENTIALS_USR' -i values.yml
+        yq eval '.secrets.pgadmin.password = $ENCODED_PGADMIN_CREDENTIALS_PSW' -i values.yml
+        yq eval '.secrets.db.user = $ENCODED_DB_CREDENTIALS_USR' -i values.yml
+        yq eval '.secrets.db.password = $ENCODED_DB_CREDENTIALS_PSW' -i values.yml
 
         helm upgrade --install app fastapi-traefik --values=values.yml --namespace dev --create-namespace
 
@@ -221,6 +232,12 @@ jobs:
     - name: Deploy to Kubernetes (prod)
       if: github.ref == 'refs/heads/master'
       run: |
+        ENCODED_SECRET_KEY=$(echo -n "$SECRET_KEY" | base64)
+        ENCODED_PGADMIN_CREDENTIALS_USR=$(echo -n "$PGADMIN_CREDENTIALS_USR" | base64)
+        ENCODED_PGADMIN_CREDENTIALS_PSW=$(echo -n "$PGADMIN_CREDENTIALS_PSW" | base64)
+        ENCODED_DB_CREDENTIALS_USR=$(echo -n "$DB_CREDENTIALS_USR" | base64)
+        ENCODED_DB_CREDENTIALS_PSW=$(echo -n "$DB_CREDENTIALS_PSW" | base64)
+
         cp fastapi-traefik/values.yaml values.yml
         
         yq eval '.namespace = "prod"' -i values.yml
@@ -231,11 +248,11 @@ jobs:
         yq eval '.ingress.host = $PROD_HOSTNAME' -i values.yml
         yq eval '.role.name = "traefik-role-prod"' -i values.yml
         yq eval '.roleBinding.name = "traefik-role-binding-prod"' -i values.yml
-        yq eval '.secrets.web.secret_key = "'$(echo -n ${{ secrets.SECRET_KEY }} | base64)'"' -i values.yml
-        yq eval '.secrets.pgadmin.email = "'$(echo -n ${{ secrets.PGADMIN_CREDENTIALS_USR }} | base64)'"' -i values.yml
-        yq eval '.secrets.pgadmin.password = "'$(echo -n ${{ secrets.PGADMIN_CREDENTIALS_PSW }} | base64)'"' -i values.yml
-        yq eval '.secrets.db.user = "'$(echo -n ${{ secrets.DB_CREDENTIALS_USR }} | base64)'"' -i values.yml
-        yq eval '.secrets.db.password = "'$(echo -n ${{ secrets.DB_CREDENTIALS_PSW }} | base64)'"' -i values.yml
+        yq eval '.secrets.web.secret_key = $ENCODED_SECRET_KEY' -i values.yml
+        yq eval '.secrets.pgadmin.email = $ENCODED_PGADMIN_CREDENTIALS_USR' -i values.yml
+        yq eval '.secrets.pgadmin.password = $ENCODED_PGADMIN_CREDENTIALS_PSW' -i values.yml
+        yq eval '.secrets.db.user = $ENCODED_DB_CREDENTIALS_USR' -i values.yml
+        yq eval '.secrets.db.password = $ENCODED_DB_CREDENTIALS_PSW' -i values.yml
 
         cat values.yml
 

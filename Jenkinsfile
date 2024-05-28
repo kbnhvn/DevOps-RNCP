@@ -25,6 +25,7 @@ metadata:
   labels:
     some-label: docker
 spec:
+  serviceAccountName: jenkins-admin
   containers:
   - name: jnlp
     image: jenkins/inbound-agent

@@ -71,17 +71,8 @@ jobs:
         aws-region: eu-west-3
 
     - name: Update kubeconfig
-      run: aws eks update-kubeconfig --region eu-west-3 --name kbnhvn-cluster
-
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'v1.21.0'
-
-    - name: Update kubeconfig
       run: |
-        sudo mkdir $HOME/.kube
-        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+        aws eks update-kubeconfig --region eu-west-3 --name kbnhvn-cluster
 
     - name: Deploy Test Environment
       run: |
@@ -166,6 +157,24 @@ jobs:
     environment:
       name: develop
 
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install yq
+      run: |
+        sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+        sudo chmod +x /usr/bin/yq
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.21.0'
+
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region eu-west-3 --name kbnhvn-cluster
+
     - name: Deploy to Kubernetes (dev)
       if: github.ref == 'refs/heads/develop'
       run: |
@@ -192,6 +201,30 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install yq
+      run: |
+        sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+        sudo chmod +x /usr/bin/yq
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.21.0'
+
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region eu-west-3 --name kbnhvn-cluster
+
+    - name: Request manual approval before production deployment
+      run: |
+        echo "Waiting for manual approval to deploy to production..."
+        echo "Please approve this step in the Actions tab on GitHub."
+      timeout-minutes: 15
 
     - name: Deploy to Kubernetes (prod)
       if: github.ref == 'refs/heads/master'

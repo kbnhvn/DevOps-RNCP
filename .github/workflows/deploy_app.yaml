@@ -180,6 +180,8 @@ jobs:
         yq eval '.secrets.db.user = strenv(DB_CREDENTIALS_USR)' -i values.yml
         yq eval '.secrets.db.password = strenv(DB_CREDENTIALS_PSW)' -i values.yml
 
+        cat values.yml
+
         helm upgrade --install app fastapi-traefik --values=values.yml --namespace dev
 
   deploy-production:
@@ -237,5 +239,7 @@ jobs:
         yq eval '.secrets.pgadmin.password = strenv(PGADMIN_CREDENTIALS_PSW)' -i values.yml
         yq eval '.secrets.db.user = strenv(DB_CREDENTIALS_USR)' -i values.yml
         yq eval '.secrets.db.password = strenv(DB_CREDENTIALS_PSW)' -i values.yml
+
+        cat values.yml
 
         helm upgrade --install app fastapi-traefik --values=values.yml --namespace prod

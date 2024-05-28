@@ -73,6 +73,16 @@ jobs:
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --region eu-west-3 --name kbnhvn-cluster
 
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.21.0'
+
+    - name: Update kubeconfig
+      run: |
+        sudo mkdir $HOME/.kube
+        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
     - name: Deploy Test Environment
       run: |
         docker network create pg_network || true
@@ -150,6 +160,12 @@ jobs:
         docker tag $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:$DOCKER_TAG $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:latest
         docker push $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:latest
 
+  deploy-develop:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: develop
+
     - name: Deploy to Kubernetes (dev)
       if: github.ref == 'refs/heads/develop'
       run: |
@@ -176,20 +192,6 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'v1.21.0'
-
-    - name: Update kubeconfig
-      run: |
-        sudo mkdir $HOME/.kube
-        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
     - name: Deploy to Kubernetes (prod)
       if: github.ref == 'refs/heads/master'

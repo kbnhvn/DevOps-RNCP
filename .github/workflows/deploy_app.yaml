@@ -181,7 +181,7 @@ jobs:
 
         cat values.yml
 
-        helm upgrade --install app fastapi-traefik --values=values.yml --namespace dev
+        helm upgrade --install app fastapi-traefik --values=values.yml --namespace dev --create-namespace
 
   deploy-production:
     needs: build-test-and-push-images
@@ -241,4 +241,4 @@ jobs:
 
         cat values.yml
 
-        helm upgrade --install app fastapi-traefik --values=values.yml --namespace prod
+        helm upgrade --install app fastapi-traefik --values=values.yml --namespace prod --create-namespace

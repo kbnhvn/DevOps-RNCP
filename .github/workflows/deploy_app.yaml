@@ -20,7 +20,6 @@ jobs:
       DEV_HOSTNAME: "dev.kbnhvn-projetc.eu"
       PROD_HOSTNAME: "prod.kbnhvn-projetc.eu"
       DOCKER_TAG: "v.${{ github.run_number }}.0"
-      KUBECONFIG: ${{ secrets.KUBECONFIG }}
 
     steps:
     - name: Checkout code
@@ -234,11 +233,11 @@ jobs:
         yq eval '.ingress.host = $PROD_HOSTNAME' -i values.yml
         yq eval '.role.name = "traefik-role-prod"' -i values.yml
         yq eval '.roleBinding.name = "traefik-role-binding-prod"' -i values.yml
-        yq eval '.secrets.web.secret_key = ${{ secrets.SECRET_KEY }} ' -i values.yml
-        yq eval '.secrets.pgadmin.email = ${{ secrets.PGADMIN_CREDENTIALS_USR }}' -i values.yml
-        yq eval '.secrets.pgadmin.password = ${{ secrets.PGADMIN_CREDENTIALS_PSW }}' -i values.yml
-        yq eval '.secrets.db.user = ${{ secrets.DB_CREDENTIALS_USR }}' -i values.yml
-        yq eval '.secrets.db.password = ${{ secrets.DB_CREDENTIALS_PSW }}' -i values.yml
+        yq eval '.secrets.web.secret_key = "'${{ secrets.SECRET_KEY }}'" ' -i values.yml
+        yq eval '.secrets.pgadmin.email = "'${{ secrets.PGADMIN_CREDENTIALS_USR }}'"' -i values.yml
+        yq eval '.secrets.pgadmin.password = "'${{ secrets.PGADMIN_CREDENTIALS_PSW }}'"' -i values.yml
+        yq eval '.secrets.db.user = "'${{ secrets.DB_CREDENTIALS_USR }}'"' -i values.yml
+        yq eval '.secrets.db.password = "'${{ secrets.DB_CREDENTIALS_PSW }}'"' -i values.yml
 
         cat values.yml
 

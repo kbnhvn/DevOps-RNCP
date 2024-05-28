@@ -7,7 +7,7 @@ on:
       - develop
 
 jobs:
-  build-and-deploy:
+  build-test-and-push-images:
     runs-on: ubuntu-latest
 
     env:
@@ -145,7 +145,7 @@ jobs:
         docker push $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:latest
 
   deploy-develop:
-    needs: build-and-deploy
+    needs: build-test-and-push-images
     runs-on: ubuntu-latest
     environment:
       name: develop
@@ -197,7 +197,7 @@ jobs:
         helm upgrade --install app fastapi-traefik --values=values.yml --namespace dev
 
   deploy-production:
-    needs: build-and-deploy
+    needs: build-test-and-push-images
     runs-on: ubuntu-latest
     environment:
       name: production

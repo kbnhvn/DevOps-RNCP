@@ -167,18 +167,18 @@ jobs:
         cp fastapi-traefik/values.yaml values.yml
         
         yq eval '.namespace = "dev"' -i values.yml
-        yq eval '.web.tag = strenv(DOCKER_TAG)' -i values.yml
-        yq eval '.data.tag = strenv(DOCKER_TAG)' -i values.yml
-        yq eval '.nginx.tag = strenv(DOCKER_TAG)' -i values.yml
-        yq eval '.web.repository = strenv(DOCKER_ID) + "/" + strenv(DOCKER_IMAGE_WEB_DEV)' -i values.yml
-        yq eval '.ingress.host = strenv(DEV_HOSTNAME)' -i values.yml
+        yq eval '.web.tag = $DOCKER_TAG' -i values.yml
+        yq eval '.data.tag = $DOCKER_TAG' -i values.yml
+        yq eval '.nginx.tag = $DOCKER_TAG' -i values.yml
+        yq eval '.web.repository = $DOCKER_ID + "/" + $DOCKER_IMAGE_WEB_DEV' -i values.yml
+        yq eval '.ingress.host = $DEV_HOSTNAME' -i values.yml
         yq eval '.role.name = "traefik-role-dev"' -i values.yml
         yq eval '.roleBinding.name = "traefik-role-binding-dev"' -i values.yml
-        yq eval '.secrets.web.secret_key = strenv(SECRET_KEY)' -i values.yml
-        yq eval '.secrets.pgadmin.email = strenv(PGADMIN_CREDENTIALS_USR)' -i values.yml
-        yq eval '.secrets.pgadmin.password = strenv(PGADMIN_CREDENTIALS_PSW)' -i values.yml
-        yq eval '.secrets.db.user = strenv(DB_CREDENTIALS_USR)' -i values.yml
-        yq eval '.secrets.db.password = strenv(DB_CREDENTIALS_PSW)' -i values.yml
+        yq eval '.secrets.web.secret_key = ${{ secrets.SECRET_KEY }}' -i values.yml
+        yq eval '.secrets.pgadmin.email = ${{ secrets.PGADMIN_CREDENTIALS_USR }}' -i values.yml
+        yq eval '.secrets.pgadmin.password = ${{ secrets.PGADMIN_CREDENTIALS_PSW }}' -i values.yml
+        yq eval '.secrets.db.user = ${{ secrets.DB_CREDENTIALS_USR }}' -i values.yml
+        yq eval '.secrets.db.password = ${{ secrets.DB_CREDENTIALS_PSW }}' -i values.yml
 
         cat values.yml
 
@@ -227,18 +227,18 @@ jobs:
         cp fastapi-traefik/values.yaml values.yml
         
         yq eval '.namespace = "prod"' -i values.yml
-        yq eval '.web.tag = strenv(DOCKER_TAG)' -i values.yml
-        yq eval '.data.tag = strenv(DOCKER_TAG)' -i values.yml
-        yq eval '.nginx.tag = strenv(DOCKER_TAG)' -i values.yml
-        yq eval '.web.repository = strenv(DOCKER_ID) + "/" + strenv(DOCKER_IMAGE_WEB_PROD)' -i values.yml
-        yq eval '.ingress.host = strenv(PROD_HOSTNAME)' -i values.yml
+        yq eval '.web.tag = $DOCKER_TAG' -i values.yml
+        yq eval '.data.tag = $DOCKER_TAG' -i values.yml
+        yq eval '.nginx.tag = $DOCKER_TAG' -i values.yml
+        yq eval '.web.repository = $DOCKER_ID + "/" + $DOCKER_IMAGE_WEB_PROD' -i values.yml
+        yq eval '.ingress.host = $PROD_HOSTNAME' -i values.yml
         yq eval '.role.name = "traefik-role-prod"' -i values.yml
         yq eval '.roleBinding.name = "traefik-role-binding-prod"' -i values.yml
-        yq eval '.secrets.web.secret_key = strenv(SECRET_KEY)' -i values.yml
-        yq eval '.secrets.pgadmin.email = strenv(PGADMIN_CREDENTIALS_USR)' -i values.yml
-        yq eval '.secrets.pgadmin.password = strenv(PGADMIN_CREDENTIALS_PSW)' -i values.yml
-        yq eval '.secrets.db.user = strenv(DB_CREDENTIALS_USR)' -i values.yml
-        yq eval '.secrets.db.password = strenv(DB_CREDENTIALS_PSW)' -i values.yml
+        yq eval '.secrets.web.secret_key = ${{ secrets.SECRET_KEY }} ' -i values.yml
+        yq eval '.secrets.pgadmin.email = ${{ secrets.PGADMIN_CREDENTIALS_USR }}' -i values.yml
+        yq eval '.secrets.pgadmin.password = ${{ secrets.PGADMIN_CREDENTIALS_PSW }}' -i values.yml
+        yq eval '.secrets.db.user = ${{ secrets.DB_CREDENTIALS_USR }}' -i values.yml
+        yq eval '.secrets.db.password = ${{ secrets.DB_CREDENTIALS_PSW }}' -i values.yml
 
         cat values.yml
 

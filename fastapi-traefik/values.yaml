@@ -83,7 +83,7 @@ elasticsearch:
 nginx:
   replicaCount: 1
   repository: kbnhvn/webserver
-  tag: v.0.0.1
+  tag: latest
   service:
     type: ClusterIP
     port: 8000

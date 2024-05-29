@@ -179,7 +179,6 @@ jobs:
         yq eval '.namespace = "dev"' -i values.yml
         yq eval '.web.tag = $DOCKER_TAG' -i values.yml
         yq eval '.data.tag = $DOCKER_TAG' -i values.yml
-        yq eval '.nginx.tag = $DOCKER_TAG' -i values.yml
         yq eval '.web.repository = $DOCKER_ID + "/" + $DOCKER_IMAGE_WEB_DEV' -i values.yml
         yq eval '.ingress.host = $DEV_HOSTNAME' -i values.yml
         yq eval '.role.name = "traefik-role-dev"' -i values.yml
@@ -243,7 +242,6 @@ jobs:
         yq eval '.namespace = "prod"' -i values.yml
         yq eval '.web.tag = $DOCKER_TAG' -i values.yml
         yq eval '.data.tag = $DOCKER_TAG' -i values.yml
-        yq eval '.nginx.tag = $DOCKER_TAG' -i values.yml
         yq eval '.web.repository = $DOCKER_ID + "/" + $DOCKER_IMAGE_WEB_PROD' -i values.yml
         yq eval '.ingress.host = $PROD_HOSTNAME' -i values.yml
         yq eval '.role.name = "traefik-role-prod"' -i values.yml

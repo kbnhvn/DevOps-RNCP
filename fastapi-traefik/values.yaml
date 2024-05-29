@@ -36,7 +36,7 @@ db:
   service:
     type: ClusterIP
   storage:
-    capacity: 10Gi
+    capacity: 3Gi
   config:
     db_name: fastapi_traefik
   credentials:
@@ -75,7 +75,7 @@ elasticsearch:
   service:
     type: ClusterIP
   storage:
-    capacity: 10Gi
+    capacity: 6Gi
   config:
     node_name: es
     discovery_type: single-node

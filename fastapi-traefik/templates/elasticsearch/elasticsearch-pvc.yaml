@@ -6,7 +6,7 @@ spec:
   accessModes:
     - ReadWriteOnce                    # Mode d'accès au volume persistant
   storageClassName: efs-sc
-  volumeName: efs-pv         
+  volumeName: efs-pv-es         
   resources:
     requests:
       storage: {{ .Values.elasticsearch.storage.capacity }}                    # Capacité de stockage demandée pour le volume

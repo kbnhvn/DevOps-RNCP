@@ -30,6 +30,7 @@ spec:
         volumeMounts:
         - name: postgres-data   
           mountPath: /var/lib/postgresql/data  # Chemin de montage dans le conteneur
+          subPath: pgdata
       volumes:
       - name: postgres-data     
         persistentVolumeClaim:

@@ -177,17 +177,17 @@ jobs:
         cp fastapi-traefik/values.yaml values.yml
         
         yq eval '.namespace = "prod"' -i values.yml
-        yq eval '.web.tag = $DOCKER_TAG' -i values.yml
-        yq eval '.data.tag = $DOCKER_TAG' -i values.yml
-        yq eval '.web.repository = $DOCKER_ID + "/" + $DOCKER_IMAGE_WEB_PROD' -i values.yml
-        yq eval '.ingress.host = $PROD_HOSTNAME' -i values.yml
+        yq eval '.web.tag = ${{ env.DOCKER_TAG }}' -i values.yml
+        yq eval '.data.tag = ${{ env.DOCKER_TAG }}' -i values.yml
+        yq eval '.web.repository = ${{ env.DOCKER_ID }} + "/" + ${{ env.DOCKER_IMAGE_WEB_PROD }}' -i values.yml
+        yq eval '.ingress.host = ${{ env.PROD_HOSTNAME }}' -i values.yml
         yq eval '.role.name = "traefik-role-prod"' -i values.yml
         yq eval '.roleBinding.name = "traefik-role-binding-prod"' -i values.yml
-        yq eval '.secrets.web.secret_key = $SECRET_KEY' -i values.yml
-        yq eval '.secrets.pgadmin.email = $PGADMIN_CREDENTIALS_USR' -i values.yml
-        yq eval '.secrets.pgadmin.password = $PGADMIN_CREDENTIALS_PSW' -i values.yml
-        yq eval '.secrets.db.user = $DB_CREDENTIALS_USR' -i values.yml
-        yq eval '.secrets.db.password = $DB_CREDENTIALS_PSW' -i values.yml
+        yq eval '.secrets.web.secret_key = ${{ env.SECRET_KEY }}' -i values.yml
+        yq eval '.secrets.pgadmin.email = ${{ env.PGADMIN_CREDENTIALS_USR }}' -i values.yml
+        yq eval '.secrets.pgadmin.password = ${{ env.PGADMIN_CREDENTIALS_PSW }}' -i values.yml
+        yq eval '.secrets.db.user = ${{ env.DB_CREDENTIALS_USR }}' -i values.yml
+        yq eval '.secrets.db.password = ${{ env.DB_CREDENTIALS_PSW }}' -i values.yml
 
         cat values.yml
 

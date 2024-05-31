@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-    
       DOCKER_ID: "kbnhvn"
       DOCKER_IMAGE_DATA: "datafetcher"
       DOCKER_IMAGE_WEB_DEV: "web-dev"

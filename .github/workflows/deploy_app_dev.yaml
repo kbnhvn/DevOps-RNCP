@@ -18,6 +18,7 @@ jobs:
       EXTERNAL_API_URL: "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/qualite-de-lair-france/records?limit=-1"
       DEV_HOSTNAME: "dev.kbnhvn-projetc.eu"
       PROD_HOSTNAME: "app.kbnhvn-projetc.eu"
+      NAMESPACE: "dev"
       DOCKER_TAG: "v.${{ github.run_number }}.0"
       SECRET_KEY: "${{ secrets.SECRET_KEY }}"
       PGADMIN_CREDENTIALS_USR: "${{ secrets.PGADMIN_CREDENTIALS_USR }}"
@@ -143,11 +144,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install yq
-      run: |
-        sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
-        sudo chmod +x /usr/bin/yq
-
     - name: Set up kubectl
       uses: azure/setup-kubectl@v1
       with:
@@ -167,20 +163,16 @@ jobs:
     - name: Deploy to Kubernetes (dev)
       if: github.ref == 'refs/heads/develop'
       run: |
-
-        cp fastapi-traefik/values.yaml values.yml
         
-        yq eval '.namespace = "dev"' -i values.yml
-        yq eval '.web.tag = $DOCKER_TAG' -i values.yml
-        yq eval '.data.tag = $DOCKER_TAG' -i values.yml
-        yq eval '.web.repository = $DOCKER_ID + "/" + $DOCKER_IMAGE_WEB_DEV' -i values.yml
-        yq eval '.ingress.host = $DEV_HOSTNAME' -i values.yml
-        yq eval '.role.name = "traefik-role-dev"' -i values.yml
-        yq eval '.roleBinding.name = "traefik-role-binding-dev"' -i values.yml
-        yq eval '.secrets.web.secret_key = $SECRET_KEY' -i values.yml
-        yq eval '.secrets.pgadmin.email = $PGADMIN_CREDENTIALS_USR' -i values.yml
-        yq eval '.secrets.pgadmin.password = $PGADMIN_CREDENTIALS_PSW' -i values.yml
-        yq eval '.secrets.db.user = $DB_CREDENTIALS_USR' -i values.yml
-        yq eval '.secrets.db.password = $DB_CREDENTIALS_PSW' -i values.yml
+        sed -i "s/<NAMESPACE>/${{ env.NAMESPACE }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<HOST>/${{ env.DOCKER_IMAGE_WEB_DEV }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<WEB_REPOSITORY>/${{ env.MOUNT_TARGET }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<ROLE_NAME>/${{ env.NAMESPACE }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<ROLE_BINDING_NAME>/${{ env.NAMESPACE }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<SECRET_KEY>/${{ env.SECRET_KEY }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<PGADMIN_USER>/${{ env.PGADMIN_CREDENTIALS_USR }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<PGADMIN_PASSWORD>/${{ env.PGADMIN_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<DB_USER>/${{ env.DB_CREDENTIALS_USR }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<DB_PASSWORD>/${{ env.DB_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
 
-        helm upgrade --install app fastapi-traefik --values=values.yml --namespace dev --create-namespace
+        helm upgrade --install app fastapi-traefik --namespace dev --create-namespace -f fastapi-traefik/values.yaml

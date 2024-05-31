@@ -19,11 +19,6 @@ jobs:
       DEV_HOSTNAME: "dev.kbnhvn-projetc.eu"
       PROD_HOSTNAME: "app.kbnhvn-projetc.eu"
       DOCKER_TAG: "v.${{ github.run_number }}.0"
-      CLOUDNS_API_URL: "https://api.cloudns.net/dns"
-      CLOUDNS_AUTH_ID: ${{ secrets.CLOUDNS_AUTH_ID }}
-      CLOUDNS_AUTH_PASSWORD: ${{ secrets.CLOUDNS_AUTH_PASSWORD }}
-      DOMAIN_NAME: "kbnhvn-project.eu"
-      PROD_SUBDOMAIN: "app"
 
     steps:
     - name: Checkout code
@@ -186,12 +181,12 @@ jobs:
 
     - name: Update ClouDNS CNAME for Prod
       run: |
-        curl -X POST "${{ env.CLOUDNS_API_URL }}/add-record.json" \
-          -d "auth-id=${{ env.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ env.CLOUDNS_AUTH_PASSWORD }}" \
-          -d "domain-name=${{ env.DOMAIN_NAME }}" \
+        curl -X POST "https://api.cloudns.net/dns/add-record.json" \
+          -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "domain-name=kbnhvn-project.eu" \
           -d "record-type=CNAME" \
-          -d "host=${{ env.PROD_SUBDOMAIN }}" \
+          -d "host=prod" \
           -d "record=${{ env.DNS_NAME }}" \
           -d "ttl=60"
 
@@ -210,10 +205,10 @@ jobs:
 
     - name: Update ClouDNS CNAME for Prometheus
       run: |
-        curl -X POST "${{ env.CLOUDNS_API_URL }}/add-record.json" \
-          -d "auth-id=${{ env.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ env.CLOUDNS_AUTH_PASSWORD }}" \
-          -d "domain-name=${{ env.DOMAIN_NAME }}" \
+        curl -X POST "https://api.cloudns.net/dns/add-record.json" \
+          -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "domain-name=kbnhvn-project.eu" \
           -d "record-type=CNAME" \
           -d "host=prometheus" \
           -d "record=${{ env.DNS_NAME }}" \
@@ -221,10 +216,10 @@ jobs:
 
     - name: Update ClouDNS CNAME for Grafana
       run: |
-        curl -X POST "${{ env.CLOUDNS_API_URL }}/add-record.json" \
-          -d "auth-id=${{ env.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ env.CLOUDNS_AUTH_PASSWORD }}" \
-          -d "domain-name=${{ env.DOMAIN_NAME }}" \
+        curl -X POST "https://api.cloudns.net/dns/add-record.json" \
+          -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "domain-name=kbnhvn-project.eu" \
           -d "record-type=CNAME" \
           -d "host=grafana" \
           -d "record=${{ env.DNS_NAME }}" \

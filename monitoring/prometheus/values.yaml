@@ -23,13 +23,9 @@ server:
     subPath: prometheus
 
 alertmanager:
-  persistentVolume:
-    enabled: true
-    accessModes:
-      - ReadWriteMany
-
-    existingClaim: "prometheus-pv-claim"
-    mountPath: /data
-    size: 2Gi
-    subPath: alertmanager
+persistence:
+  enabled: true
+  storageClassName: efs-sc
+    - ReadWriteMany
+  size: 50Mi
 

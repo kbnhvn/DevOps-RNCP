@@ -11,7 +11,7 @@ nginx:
   tag: latest
 
 ingress:
-  host: dev.localhost
+  host: dev.kbnhvn-project.eu
 
 role:
   name: traefik-role-dev

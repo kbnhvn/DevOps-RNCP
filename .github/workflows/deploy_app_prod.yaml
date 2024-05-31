@@ -169,12 +169,7 @@ jobs:
     - name: Deploy to Kubernetes (prod)
       if: github.ref == 'refs/heads/master'
       run: |
-        
-        sed -i "s/<NAMESPACE>/${{ env.NAMESPACE }}/g" fastapi-traefik/values.yaml
-        sed -i "s/<HOST>/${{ env.DOCKER_IMAGE_WEB_PROD }}/g" fastapi-traefik/values.yaml
-        sed -i "s/<WEB_REPOSITORY>/${{ env.MOUNT_TARGET }}/g" fastapi-traefik/values.yaml
-        sed -i "s/<ROLE_NAME>/${{ env.NAMESPACE }}/g" fastapi-traefik/values.yaml
-        sed -i "s/<ROLE_BINDING_NAME>/${{ env.NAMESPACE }}/g" fastapi-traefik/values.yaml
+
         sed -i "s/<SECRET_KEY>/${{ env.SECRET_KEY }}/g" fastapi-traefik/values.yaml
         sed -i "s/<PGADMIN_USER>/${{ env.PGADMIN_CREDENTIALS_USR }}/g" fastapi-traefik/values.yaml
         sed -i "s/<PGADMIN_PASSWORD>/${{ env.PGADMIN_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
@@ -183,4 +178,4 @@ jobs:
 
         cat fastapi-traefik/values.yaml
 
-        helm upgrade --install app fastapi-traefik --namespace prod --create-namespace -f fastapi-traefik/values.yaml
+        helm upgrade --install app fastapi-traefik --namespace prod --create-namespace -f fastapi-traefik/values.yaml -f fastapi-traefik/values-prod.yaml

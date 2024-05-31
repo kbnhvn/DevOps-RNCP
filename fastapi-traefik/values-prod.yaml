@@ -3,8 +3,6 @@ namespace: prod
 web:
   repository: kbnhvn/web-prod
   tag: latest
-  command:
-  args:
 
 data:
   tag: latest
@@ -13,7 +11,7 @@ nginx:
   tag: latest
 
 ingress:
-  host: prod.localhost
+  host: app.kbnhvn-project.eu
 
 role:
   name: traefik-role-prod

@@ -10,3 +10,23 @@ service:
   enabled: true
   type: ClusterIP
   port: 80
+
+persistence:
+  type: pvc
+  enabled: true
+  storageClassName: efs-sc
+  existingClaim: "grafana-pv-claim"
+  accessModes:
+    - ReadWriteMany
+  size: 10Gi
+  subPath: /grafana
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-server.monitoring.svc.cluster.local
+        access: proxy
+        isDefault: true

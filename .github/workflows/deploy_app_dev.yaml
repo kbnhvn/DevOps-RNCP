@@ -20,6 +20,14 @@ jobs:
       PROD_HOSTNAME: "app.kbnhvn-projetc.eu"
       DOCKER_TAG: "v.${{ github.run_number }}.0"
 
+
+      # For domain update
+      CLOUDNS_API_URL: "https://api.cloudns.net/dns"
+      CLOUDNS_AUTH_ID: ${{ secrets.CLOUDNS_AUTH_ID }}
+      CLOUDNS_AUTH_PASSWORD: ${{ secrets.CLOUDNS_AUTH_PASSWORD }}
+      DOMAIN_NAME: "kbnhvn-project.eu"
+      DEV_SUBDOMAIN: "dev"
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -165,3 +173,55 @@ jobs:
         sed -i "s/<DB_PASSWORD>/${{ secrets.DB_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
 
         helm upgrade --install app fastapi-traefik --namespace dev --create-namespace -f fastapi-traefik/values.yaml -f fastapi-traefik/values-dev.yaml
+
+    - name: Get Load Balancer DNS name
+      run: |
+        DNS_NAME=$(kubectl get svc traefik-websecure-service --namespace dev -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+        echo "DNS_NAME=${DNS_NAME}" >> $GITHUB_ENV
+
+    - name: Update ClouDNS CNAME for Dev
+      run: |
+        curl -X POST "${{ env.CLOUDNS_API_URL }}/add-record.json" \
+          -d "auth-id=${{ env.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ env.CLOUDNS_AUTH_PASSWORD }}" \
+          -d "domain-name=${{ env.DOMAIN_NAME }}" \
+          -d "record-type=CNAME" \
+          -d "host=${{ env.DEV_SUBDOMAIN }}" \
+          -d "record=${{ env.DNS_NAME }}" \
+          -d "ttl=60"
+
+    - name: Deploy grafana
+      run: |
+        helm repo add grafana https://grafana.github.io/helm-charts
+        helm repo update
+        helm upgrade --install grafana grafana/grafana --namespace monitoring --create-namespace -f k8s-configs/grafana/values.yaml
+          
+    - name: Deploy Prometheus
+      run: |
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+        kubectl apply -f k8s-configs/prometheus/volume.yaml
+        helm upgrade --install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace -f k8s-configs/prometheus/values.yaml
+
+    - name: Update ClouDNS CNAME for Prometheus
+      run: |
+        curl -X POST "${{ env.CLOUDNS_API_URL }}/add-record.json" \
+          -d "auth-id=${{ env.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ env.CLOUDNS_AUTH_PASSWORD }}" \
+          -d "domain-name=${{ env.DOMAIN_NAME }}" \
+          -d "record-type=CNAME" \
+          -d "host=prometheus" \
+          -d "record=${{ env.DNS_NAME }}" \
+          -d "ttl=60"
+
+    - name: Update ClouDNS CNAME for Grafana
+      run: |
+        curl -X POST "${{ env.CLOUDNS_API_URL }}/add-record.json" \
+          -d "auth-id=${{ env.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ env.CLOUDNS_AUTH_PASSWORD }}" \
+          -d "domain-name=${{ env.DOMAIN_NAME }}" \
+          -d "record-type=CNAME" \
+          -d "host=grafana" \
+          -d "record=${{ env.DNS_NAME }}" \
+          -d "ttl=60"
+

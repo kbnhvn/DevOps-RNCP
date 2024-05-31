@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - develop
 
 jobs:
   build-test-and-push-images:
@@ -13,7 +12,6 @@ jobs:
     env:
       DOCKER_ID: "kbnhvn"
       DOCKER_IMAGE_DATA: "datafetcher"
-      DOCKER_IMAGE_WEB_DEV: "web-dev"
       DOCKER_IMAGE_WEB_PROD: "web-prod"
       DOCKER_IMAGE_WEBSERVER: "webserver"
       EXTERNAL_API_URL: "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/qualite-de-lair-france/records?limit=-1"
@@ -133,58 +131,6 @@ jobs:
         docker push $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:$DOCKER_TAG
         docker tag $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:$DOCKER_TAG $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:latest
         docker push $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:latest
-
-  deploy-develop:
-    needs: build-test-and-push-images
-    runs-on: ubuntu-latest
-    environment:
-      name: develop
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Install yq
-      run: |
-        sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
-        sudo chmod +x /usr/bin/yq
-
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'v1.21.0'
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-3
-
-    - name: Update kubeconfig
-      run: |
-        aws eks update-kubeconfig --region eu-west-3 --name kbnhvn-cluster
-
-    - name: Deploy to Kubernetes (dev)
-      if: github.ref == 'refs/heads/develop'
-      run: |
-
-        cp fastapi-traefik/values.yaml values.yml
-        
-        yq eval '.namespace = "dev"' -i values.yml
-        yq eval '.web.tag = $DOCKER_TAG' -i values.yml
-        yq eval '.data.tag = $DOCKER_TAG' -i values.yml
-        yq eval '.web.repository = $DOCKER_ID + "/" + $DOCKER_IMAGE_WEB_DEV' -i values.yml
-        yq eval '.ingress.host = $DEV_HOSTNAME' -i values.yml
-        yq eval '.role.name = "traefik-role-dev"' -i values.yml
-        yq eval '.roleBinding.name = "traefik-role-binding-dev"' -i values.yml
-        yq eval '.secrets.web.secret_key = $SECRET_KEY' -i values.yml
-        yq eval '.secrets.pgadmin.email = $PGADMIN_CREDENTIALS_USR' -i values.yml
-        yq eval '.secrets.pgadmin.password = $PGADMIN_CREDENTIALS_PSW' -i values.yml
-        yq eval '.secrets.db.user = $DB_CREDENTIALS_USR' -i values.yml
-        yq eval '.secrets.db.password = $DB_CREDENTIALS_PSW' -i values.yml
-
-        helm upgrade --install app fastapi-traefik --values=values.yml --namespace dev --create-namespace
 
   deploy-production:
     needs: build-test-and-push-images

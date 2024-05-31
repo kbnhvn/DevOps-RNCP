@@ -1,0 +1,186 @@
+name: Application CI/CD
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-test-and-push-images:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_ID: "kbnhvn"
+      DOCKER_IMAGE_DATA: "datafetcher"
+      DOCKER_IMAGE_WEB_DEV: "web-dev"
+      DOCKER_IMAGE_WEB_PROD: "web-prod"
+      DOCKER_IMAGE_WEBSERVER: "webserver"
+      EXTERNAL_API_URL: "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/qualite-de-lair-france/records?limit=-1"
+      DEV_HOSTNAME: "dev.kbnhvn-projetc.eu"
+      PROD_HOSTNAME: "app.kbnhvn-projetc.eu"
+      DOCKER_TAG: "v.${{ github.run_number }}.0"
+      SECRET_KEY: "${{ secrets.SECRET_KEY }}"
+      PGADMIN_CREDENTIALS_USR: "${{ secrets.PGADMIN_CREDENTIALS_USR }}"
+      PGADMIN_CREDENTIALS_PSW: "${{ secrets.PGADMIN_CREDENTIALS_PSW }}"
+      DB_CREDENTIALS_USR: "${{ secrets.DB_CREDENTIALS_USR }}"
+      DB_CREDENTIALS_PSW: "${{ secrets.DB_CREDENTIALS_PSW }}"
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker images
+      run: |
+        docker rm -f $DOCKER_IMAGE_DATA || true
+        docker build -t $DOCKER_ID/$DOCKER_IMAGE_DATA:$DOCKER_TAG ./datas
+        sleep 6
+
+        docker rm -f $DOCKER_IMAGE_WEB_DEV || true
+        docker build -t $DOCKER_ID/$DOCKER_IMAGE_WEB_DEV:$DOCKER_TAG ./baseProject
+        sleep 6
+
+        docker rm -f $DOCKER_IMAGE_WEB_PROD || true
+        docker build -t $DOCKER_ID/$DOCKER_IMAGE_WEB_PROD:$DOCKER_TAG -f ./baseProject/Dockerfile.prod ./baseProject
+        sleep 6
+
+        docker rm -f $DOCKER_IMAGE_WEBSERVER || true
+        docker build -t $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:$DOCKER_TAG ./loginPage
+        sleep 6
+
+    - name: Deploy Test Environment
+      run: |
+        docker network create pg_network || true
+        docker network create es_network || true
+
+        docker run -d \
+          --name db --network pg_network \
+          -v postgres_data:/var/lib/postgresql/data/ \
+          -e POSTGRES_USER=fastapi_traefik \
+          -e POSTGRES_PASSWORD=fastapi_traefik \
+          -e POSTGRES_DB=fastapi_traefik \
+          -p 5433:5432 \
+          postgres:15-alpine
+
+        docker run -d \
+          --name elasticsearch --network es_network \
+          -v elastic_data:/usr/share/elasticsearch/data \
+          -e node.name=es \
+          -e discovery.type=single-node \
+          -p 9200:9200 \
+          docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+
+    - name: Run Docker Containers
+      run: |
+        docker run -d --name $DOCKER_IMAGE_DATA --network es_network \
+          -e DATABASE_URL=http://elasticsearch:9200 \
+          -e INDEX_NAME=qualite_air \
+          -e EXTERNAL_API_URL=$EXTERNAL_API_URL \
+          $DOCKER_ID/$DOCKER_IMAGE_DATA:$DOCKER_TAG
+
+        docker run -d -p 8005:8000 --name $DOCKER_IMAGE_WEB_DEV --network pg_network \
+          -e DATABASE_URL=postgresql://fastapi_traefik:fastapi_traefik@db:5432/fastapi_traefik \
+          $DOCKER_ID/$DOCKER_IMAGE_WEB_DEV:$DOCKER_TAG \
+          bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0'
+
+        docker run -d -p 8006:80 --name $DOCKER_IMAGE_WEB_PROD --network pg_network \
+          -e DATABASE_URL=postgresql://fastapi_traefik:fastapi_traefik@db:5432/fastapi_traefik \
+          $DOCKER_ID/$DOCKER_IMAGE_WEB_PROD:$DOCKER_TAG
+
+        docker run -d -p 8003:80 --name $DOCKER_IMAGE_WEBSERVER \
+          $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:$DOCKER_TAG
+
+    - name: Test Containers
+      run: |
+        sleep 10 # Attendre que les conteneurs démarrent
+
+        # Test data Container
+        curl $EXTERNAL_API_URL
+        curl -X GET http://localhost:9200/qualite_air/_search?pretty=true&size=10
+
+        # Test web_dev Container
+        curl localhost:8005/health
+
+        # Test web_prod Container
+        curl localhost:8006/health
+
+        # Test webserver Container
+        curl localhost:8003/
+
+    - name: Push Docker images
+      run: |
+        docker push $DOCKER_ID/$DOCKER_IMAGE_DATA:$DOCKER_TAG
+        docker tag $DOCKER_ID/$DOCKER_IMAGE_DATA:$DOCKER_TAG $DOCKER_ID/$DOCKER_IMAGE_DATA:latest
+        docker push $DOCKER_ID/$DOCKER_IMAGE_DATA:latest
+        
+        docker push $DOCKER_ID/$DOCKER_IMAGE_WEB_DEV:$DOCKER_TAG
+        docker tag $DOCKER_ID/$DOCKER_IMAGE_WEB_DEV:$DOCKER_TAG $DOCKER_ID/$DOCKER_IMAGE_WEB_DEV:latest
+        docker push $DOCKER_ID/$DOCKER_IMAGE_WEB_DEV:latest
+        
+        docker push $DOCKER_ID/$DOCKER_IMAGE_WEB_PROD:$DOCKER_TAG
+        docker tag $DOCKER_ID/$DOCKER_IMAGE_WEB_PROD:$DOCKER_TAG $DOCKER_ID/$DOCKER_IMAGE_WEB_PROD:latest
+        docker push $DOCKER_ID/$DOCKER_IMAGE_WEB_PROD:latest
+        
+        docker push $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:$DOCKER_TAG
+        docker tag $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:$DOCKER_TAG $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:latest
+        docker push $DOCKER_ID/$DOCKER_IMAGE_WEBSERVER:latest
+
+  deploy-develop:
+    needs: build-test-and-push-images
+    runs-on: ubuntu-latest
+    environment:
+      name: develop
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install yq
+      run: |
+        sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+        sudo chmod +x /usr/bin/yq
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.21.0'
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-3
+
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region eu-west-3 --name kbnhvn-cluster
+
+    - name: Deploy to Kubernetes (dev)
+      if: github.ref == 'refs/heads/develop'
+      run: |
+
+        cp fastapi-traefik/values.yaml values.yml
+        
+        yq eval '.namespace = "dev"' -i values.yml
+        yq eval '.web.tag = $DOCKER_TAG' -i values.yml
+        yq eval '.data.tag = $DOCKER_TAG' -i values.yml
+        yq eval '.web.repository = $DOCKER_ID + "/" + $DOCKER_IMAGE_WEB_DEV' -i values.yml
+        yq eval '.ingress.host = $DEV_HOSTNAME' -i values.yml
+        yq eval '.role.name = "traefik-role-dev"' -i values.yml
+        yq eval '.roleBinding.name = "traefik-role-binding-dev"' -i values.yml
+        yq eval '.secrets.web.secret_key = $SECRET_KEY' -i values.yml
+        yq eval '.secrets.pgadmin.email = $PGADMIN_CREDENTIALS_USR' -i values.yml
+        yq eval '.secrets.pgadmin.password = $PGADMIN_CREDENTIALS_PSW' -i values.yml
+        yq eval '.secrets.db.user = $DB_CREDENTIALS_USR' -i values.yml
+        yq eval '.secrets.db.password = $DB_CREDENTIALS_PSW' -i values.yml
+
+        helm upgrade --install app fastapi-traefik --values=values.yml --namespace dev --create-namespace

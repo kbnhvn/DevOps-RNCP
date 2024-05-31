@@ -18,13 +18,7 @@ jobs:
       EXTERNAL_API_URL: "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/qualite-de-lair-france/records?limit=-1"
       DEV_HOSTNAME: "dev.kbnhvn-projetc.eu"
       PROD_HOSTNAME: "app.kbnhvn-projetc.eu"
-      NAMESPACE: "prod"
       DOCKER_TAG: "v.${{ github.run_number }}.0"
-      SECRET_KEY: "${{ secrets.SECRET_KEY }}"
-      PGADMIN_CREDENTIALS_USR: "${{ secrets.PGADMIN_CREDENTIALS_USR }}"
-      PGADMIN_CREDENTIALS_PSW: "${{ secrets.PGADMIN_CREDENTIALS_PSW }}"
-      DB_CREDENTIALS_USR: "${{ secrets.DB_CREDENTIALS_USR }}"
-      DB_CREDENTIALS_PSW: "${{ secrets.DB_CREDENTIALS_PSW }}"
 
     steps:
     - name: Checkout code
@@ -170,11 +164,11 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: |
 
-        sed -i "s/<SECRET_KEY>/${{ env.SECRET_KEY }}/g" fastapi-traefik/values.yaml
-        sed -i "s/<PGADMIN_USER>/${{ env.PGADMIN_CREDENTIALS_USR }}/g" fastapi-traefik/values.yaml
-        sed -i "s/<PGADMIN_PASSWORD>/${{ env.PGADMIN_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
-        sed -i "s/<DB_USER>/${{ env.DB_CREDENTIALS_USR }}/g" fastapi-traefik/values.yaml
-        sed -i "s/<DB_PASSWORD>/${{ env.DB_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<SECRET_KEY>/${{ secrets.SECRET_KEY }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<PGADMIN_USER>/${{ secrets.PGADMIN_CREDENTIALS_USR }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<PGADMIN_PASSWORD>/${{ secrets.PGADMIN_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<DB_USER>/${{ secrets.DB_CREDENTIALS_USR }}/g" fastapi-traefik/values.yaml
+        sed -i "s/<DB_PASSWORD>/${{ secrets.DB_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
 
         cat fastapi-traefik/values.yaml
 

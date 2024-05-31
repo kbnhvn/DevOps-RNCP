@@ -4,7 +4,7 @@ metadata:
   name: elasticsearch-pvc                       
 spec:
   accessModes:
-    - ReadWriteOnce                    # Mode d'accès au volume persistant
+    - ReadWriteMany                    # Mode d'accès au volume persistant
   storageClassName: efs-sc
   volumeName: efs-pv-es         
   resources:

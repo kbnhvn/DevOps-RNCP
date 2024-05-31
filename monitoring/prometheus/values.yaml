@@ -20,7 +20,7 @@ server:
     existingClaim: "prometheus-pv-claim"
     mountPath: /data
     size: 4Gi
-    subPath: "/prometheus"
+    subPath: prometheus
 
 alertmanager:
   persistentVolume:
@@ -31,5 +31,5 @@ alertmanager:
     existingClaim: "prometheus-pv-claim"
     mountPath: /data
     size: 2Gi
-    subPath: "/alertmanager"
+    subPath: alertmanager
 

@@ -19,7 +19,7 @@ persistence:
   accessModes:
     - ReadWriteMany
   size: 10Gi
-  subPath: /grafana
+  subPath: grafana
 
 datasources:
   datasources.yaml:

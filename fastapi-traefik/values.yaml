@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-namespace: ""
+namespace: <NAMESPACE>
 
 data:
   schedule: "0 0 */2 * *"     # Un jour ,sur deux a minuit
@@ -13,7 +13,7 @@ data:
 
 web:
   replicaCount: 1
-  repository: kbnhvn/web-dev
+  repository: kbnhvn/<WEB_REPOSITORY>
   tag: latest
   command: ["bash", "-c"]
   args: ["uvicorn app.main:app --host 0.0.0.0"]
@@ -116,7 +116,7 @@ traefik:
       containerPort: 8080
 
 role:
-  name: traefik-role
+  name: traefik-role-<ROLE_NAME>
   rules:
     - apiGroups:
         - ""
@@ -167,7 +167,7 @@ serviceAccount:
   name: traefik-service-account
 
 roleBinding:
-  name: traefik-role-binding
+  name: traefik-role-binding-<ROLE_BINDING_NAME>
 
 dashboardService:
   name: traefik-dashboard-service
@@ -188,15 +188,15 @@ webSecureService:
   targetPort: 443
 
 ingress:
-  host: fastapi-traefik.cours-datascientest-devops.cloudns.be
+  host: <HOST>
 
 # Les secrets sont stockés dans les credentials Jenkins et sont envoyés via le pipeline
 secrets:
   web:
-    secret_key: ""
+    secret_key: <SECRET_KEY>
   pgadmin:
-    email: ""
-    password: ""
+    email: <PGADMIN_USER>
+    password: <PGADMIN_PASSWORD>
   db:
-    user: ""
-    password: ""
+    user: <DB_USER>
+    password: <DB_PASSWORD>

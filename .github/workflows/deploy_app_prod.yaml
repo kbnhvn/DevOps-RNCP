@@ -18,6 +18,7 @@ jobs:
       EXTERNAL_API_URL: "https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/qualite-de-lair-france/records?limit=-1"
       DEV_HOSTNAME: "dev.kbnhvn-projetc.eu"
       PROD_HOSTNAME: "app.kbnhvn-projetc.eu"
+      NAMESPACE: "prod"
       DOCKER_TAG: "v.${{ github.run_number }}.0"
       SECRET_KEY: "${{ secrets.SECRET_KEY }}"
       PGADMIN_CREDENTIALS_USR: "${{ secrets.PGADMIN_CREDENTIALS_USR }}"
@@ -143,11 +144,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install yq
-      run: |
-        sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
-        sudo chmod +x /usr/bin/yq
-
     - name: Set up kubectl
       uses: azure/setup-kubectl@v1
       with:
@@ -176,18 +172,16 @@ jobs:
 
         cp fastapi-traefik/values.yaml values.yml
         
-        yq eval '.namespace = "prod"' -i values.yml
-        yq eval '.web.tag = "${{ env.DOCKER_TAG }}"' -i values.yml
-        yq eval '.data.tag = "${{ env.DOCKER_TAG }}"' -i values.yml
-        yq eval '.web.repository = "${{ env.DOCKER_ID }}" + "/" + "${{ env.DOCKER_IMAGE_WEB_PROD }}"' -i values.yml
-        yq eval '.ingress.host = "${{ env.PROD_HOSTNAME }}"' -i values.yml
-        yq eval '.role.name = "traefik-role-prod"' -i values.yml
-        yq eval '.roleBinding.name = "traefik-role-binding-prod"' -i values.yml
-        yq eval '.secrets.web.secret_key = "${{ env.SECRET_KEY }}"' -i values.yml
-        yq eval '.secrets.pgadmin.email = "${{ env.PGADMIN_CREDENTIALS_USR }}"' -i values.yml
-        yq eval '.secrets.pgadmin.password = "${{ env.PGADMIN_CREDENTIALS_PSW }}"' -i values.yml
-        yq eval '.secrets.db.user = "${{ env.DB_CREDENTIALS_USR }}"' -i values.yml
-        yq eval '.secrets.db.password = "${{ env.DB_CREDENTIALS_PSW }}"' -i values.yml
+        sed -i "s/<NAMESPACE>/${{ env.NAMESPACE }}/g" values.yml
+        sed -i "s/<HOST>/${{ env.DOCKER_IMAGE_WEB_PROD }}/g" values.yml
+        sed -i "s/<WEB_REPOSITORY>/${{ env.MOUNT_TARGET }}/g" values.yml
+        sed -i "s/<ROLE_NAME>/${{ env.NAMESPACE }}/g" values.yml
+        sed -i "s/<ROLE_BINDING_NAME>/${{ env.NAMESPACE }}/g" values.yml
+        sed -i "s/<SECRET_KEY>/${{ env.SECRET_KEY }}/g" values.yml
+        sed -i "s/<PGADMIN_USER>/${{ env.PGADMIN_CREDENTIALS_USR }}/g" values.yml
+        sed -i "s/<PGADMIN_PASSWORD>/${{ env.PGADMIN_CREDENTIALS_PSW }}/g" values.yml
+        sed -i "s/<DB_USER>/${{ env.DB_CREDENTIALS_USR }}/g" values.yml
+        sed -i "s/<DB_PASSWORD>/${{ env.DB_CREDENTIALS_PSW }}/g" values.yml
 
         cat values.yml
 

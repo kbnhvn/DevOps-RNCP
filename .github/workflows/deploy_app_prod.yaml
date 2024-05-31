@@ -190,6 +190,10 @@ jobs:
           -d "record=${{ env.DNS_NAME }}" \
           -d "ttl=60"
 
+    - name: Check if monitoring namespace exist, if not, create
+      run: |
+        kubectl get namespace monitoring || kubectl create namespace monitoring
+
     - name: Deploy Prometheus
       run: |
         helm repo add kube-state-metrics https://kubernetes.github.io/kube-state-metrics

@@ -2,8 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-namespace: ""
-
 data:
   schedule: "0 0 */2 * *"     # Un jour ,sur deux a minuit
   repository: kbnhvn/datafetcher
@@ -13,7 +11,6 @@ data:
 
 web:
   replicaCount: 1
-  repository: ""
   tag: latest
   command: ["bash", "-c"]
   args: ["uvicorn app.main:app --host 0.0.0.0"]
@@ -116,7 +113,6 @@ traefik:
       containerPort: 8080
 
 role:
-  name: ""
   rules:
     - apiGroups:
         - ""
@@ -166,9 +162,6 @@ role:
 serviceAccount:
   name: traefik-service-account
 
-roleBinding:
-  name: ""
-
 dashboardService:
   name: traefik-dashboard-service
   type: LoadBalancer
@@ -186,9 +179,6 @@ webSecureService:
   type: LoadBalancer
   port: 443
   targetPort: 443
-
-ingress:
-  host: ""
 
 # Les secrets sont stockés dans les credentials Jenkins et sont envoyés via le pipeline
 secrets:

@@ -11,11 +11,11 @@ prometheus:
 grafana:
   ingress:
     enabled: true
-      annotations: 
-        kubernetes.io/ingress.class: traefik
-      hosts:
-        - grafana.kbnhvn-project.eu
-      path: /
+    annotations: 
+      kubernetes.io/ingress.class: traefik
+    hosts:
+      - grafana.kbnhvn-project.eu
+    path: /
 
 
 

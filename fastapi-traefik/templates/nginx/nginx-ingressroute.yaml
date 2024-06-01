@@ -21,5 +21,6 @@ spec:
       port: {{ .Values.nginx.service.port }}
     middlewares:
       - name: https-redirect
+      
   tls:
     secretName: letsencrypt

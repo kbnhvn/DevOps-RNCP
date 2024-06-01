@@ -64,5 +64,6 @@ spec:
       port: {{ .Values.web.service.port }}
     middlewares:
       - name: https-redirect
+      
   tls:
     secretName: letsencrypt

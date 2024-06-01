@@ -15,5 +15,6 @@ spec:
     middlewares:
       - name: traefik-auth-middleware
       - name: https-redirect
+      
   tls:
     secretName: letsencrypt

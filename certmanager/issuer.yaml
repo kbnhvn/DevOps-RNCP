@@ -18,7 +18,6 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: letsencrypt
-  namespace: prod
 spec:
   commonName: app.kbnhvn-project.eu
   secretName: letsencrypt

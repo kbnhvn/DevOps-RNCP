@@ -1,29 +1,30 @@
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
-  name: letsencrypt
+  name: cloudns-issuer
 spec:
   acme:
     email: joel.lourenco.pro@gmail.com
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: letsencrypt-issuer-account-key
+      name: issuer-account-key
     solvers:
-      - http01:
+      - dns01:
+        webhook:
+        groupName: acme.ixon.cloud
+        solverName: cloudns
           ingress:
-            serviceType: ClusterIP
-            ingressClassName: traefik
+            class: traefik
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: letsencrypt
-  namespace: {{ .Values.namespace }}
 spec:
-  commonName: {{ .Values.ingress.host }}
+  commonName: app.kbnhvn-project.eu
   secretName: letsencrypt
-  dnsNames:
-    - {{ .Values.ingress.host }}
   issuerRef:
-    kind: Issuer
-    name: letsencrypt
+    name: cloudns-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - "app.kbnhvn-project.eu" 

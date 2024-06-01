@@ -163,7 +163,14 @@ jobs:
     - name: Install Cert-manager
       run: |
         helm repo add jetstack https://charts.jetstack.io
-        helm upgrade --install cert-manager jetstack/cert-manager --version v1.12.2 --set installCRDs=true
+        helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.14.5 --set installCRDs=true
+
+        kubectl create secret generic cert-manager-webhook-cloudns-api-secret \
+          --from-literal=auth_id="${{ secrets.CLOUDNS_AUTH_ID }}" \
+          --from-literal=auth_password="${{ secrets.CLOUDNS_AUTH_PASSWORD }}"
+        make rendered-manifest.yaml
+        kubectl apply -f .out/rendered-manifest.yaml
+        kubectl apply -f certmanager/issuer.yaml
 
     - name: Deploy to Kubernetes (prod)
       if: github.ref == 'refs/heads/master'

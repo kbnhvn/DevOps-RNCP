@@ -16,4 +16,4 @@ spec:
       - name: traefik-auth-admin-middleware
       - name: https-redirect
   tls:
-    secretName: {{ .Values.namespace }}-secret
+    secretName: letsencrypt

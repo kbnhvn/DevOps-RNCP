@@ -65,4 +65,4 @@ spec:
     middlewares:
       - name: https-redirect
   tls:
-    secretName: {{ .Values.namespace }}-secret
+    secretName: letsencrypt

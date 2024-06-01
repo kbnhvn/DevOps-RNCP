@@ -1,26 +1,29 @@
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
-  name: {{ .Values.namespace }}-letsencrypt
+  name: letsencrypt
 spec:
   acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
     email: joel.lourenco.pro@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: {{ .Values.namespace }}-letsencrypt
+      name: letsencrypt-issuer-account-key
     solvers:
       - http01:
           ingress:
-            class: traefik
+            serviceType: ClusterIP
+            ingressClassName: traefik
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ .Values.namespace }}-cert
+  name: letsencrypt
+  namespace: {{ .Values.namespace }}
 spec:
-  secretName: {{ .Values.namespace }}-secret
-  issuerRef:
-    name: {{ .Values.namespace }}-letsencrypt
-    kind: ClusterIssuer
+  commonName: {{ .Values.ingress.host }}
+  secretName: letsencrypt
   dnsNames:
     - {{ .Values.ingress.host }}
+  issuerRef:
+    kind: Issuer
+    name: letsencrypt

@@ -177,7 +177,7 @@ webService:
 
 webSecureService:
   name: traefik-websecure-service
-  type: ClusterIP
+  type: LoadBalancer
   port: 443
   targetPort: 443
 

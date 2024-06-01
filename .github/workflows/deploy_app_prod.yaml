@@ -176,7 +176,7 @@ jobs:
 
     - name: Get Load Balancer DNS name
       run: |
-        DNS_NAME=$(kubectl get svc traefik-websecure-service --namespace prod -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+        DNS_NAME=$(kubectl get svc traefik-web-service --namespace prod -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
         echo "DNS_NAME=${DNS_NAME}" >> $GITHUB_ENV
 
     - name: Update ClouDNS CNAME for Prod

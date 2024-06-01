@@ -1,25 +1,33 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: monitoring-ingressroute
+  namespace: monitoring
+  annotations: 
+    kubernetes.io/ingress.class: traefik
+  name: monitoring-stack-ingress
+  labels:
+    name: monitoring-stack-ingress
+
 spec:
-  entryPoints:
-    - web
-    - websecure
-  routes:
-  - match: Host(`grafana.kbnhvn-project.eu`) && PathPrefix(`/`)
-    kind: Rule
-    services:
-    - name: monitoring-stack-grafana
-      port: 80
-    middlewares:
-      - name: https-redirect
-  - match: Host(`prometheus.kbnhvn-project.eu`) && PathPrefix(`/`)
-    kind: Rule
-    services:
-    - name: monitoring-stack-kube-prom-prometheus
-      port: 9090
-    middlewares:
-      - name: https-redirect
-  tls:
-    certResolver: letsencrypt
+  rules:
+  - host: grafana.kbnhvn-project.eu
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: monitoring-stack-grafana 
+            port: 
+              number: 80
+
+  - host: prom.kbnhvn-project.eu
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: monitoring-stack-kube-prom-prometheus 
+            port: 
+              number: 9090

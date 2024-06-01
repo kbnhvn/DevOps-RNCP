@@ -22,4 +22,4 @@ spec:
     middlewares:
       - name: https-redirect
   tls:
-    certResolver: letsencrypt
+    secretName: {{ .Values.namespace }}-secret

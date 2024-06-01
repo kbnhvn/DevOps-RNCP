@@ -160,6 +160,10 @@ jobs:
         echo "Please approve this step in the Actions tab on GitHub."
       timeout-minutes: 15
 
+    - name: Install Cert-manager
+      run: |
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.1/cert-manager.yaml
+
     - name: Deploy to Kubernetes (prod)
       if: github.ref == 'refs/heads/master'
       run: |
@@ -169,8 +173,6 @@ jobs:
         sed -i "s/<PGADMIN_PASSWORD>/${{ secrets.PGADMIN_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
         sed -i "s/<DB_USER>/${{ secrets.DB_CREDENTIALS_USR }}/g" fastapi-traefik/values.yaml
         sed -i "s/<DB_PASSWORD>/${{ secrets.DB_CREDENTIALS_PSW }}/g" fastapi-traefik/values.yaml
-
-        cat fastapi-traefik/values.yaml
 
         helm upgrade --install app fastapi-traefik --namespace prod --create-namespace -f fastapi-traefik/values.yaml -f fastapi-traefik/values-prod.yaml
 

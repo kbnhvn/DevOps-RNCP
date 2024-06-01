@@ -15,6 +15,6 @@ spec:
       middlewares:
       # - name: dashboard-stripprefix
       - name: traefik-auth-admin-middleware
-      - name: https-redirect
-  tls:
-    secretName: letsencrypt
+      # - name: https-redirect
+  # tls:
+  #   secretName: letsencrypt

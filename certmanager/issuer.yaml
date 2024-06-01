@@ -1,13 +1,13 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: cloudns-issuer
+  name: cloudns-issuer-prod
 spec:
   acme:
     email: joel.lourenco.pro@gmail.com
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: issuer-account-key
+      name: issuer-account-key-prod
     solvers:
       - http01:
           ingress:
@@ -22,7 +22,7 @@ spec:
   commonName: app.kbnhvn-project.eu
   secretName: letsencrypt
   issuerRef:
-    name: cloudns-issuer
+    name: cloudns-issuer-prod
     kind: ClusterIssuer
   dnsNames:
     - "app.kbnhvn-project.eu" 

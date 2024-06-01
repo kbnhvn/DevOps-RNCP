@@ -1,0 +1,45 @@
+alertmanager:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: traefik
+    hosts: ['alertmanager.kbnhvn-project.eu']
+    paths: ['/']
+    # tls:
+    # - secretName: tls-credential
+    #   hosts:
+    #   - alertmanager.kbnhvn-project.eu
+...
+  alertmanagerSpec:
+    externalUrl: http://alertmanager.kbnhvn-project.eu/
+    routePrefix: /
+
+grafana:
+  # username is 'admin'
+  adminPassword: prom-operator
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: traefik
+    hosts: ['grafana.kbnhvn-project.eu']
+    path: "/"
+    # tls:
+    # - secretName: tls-credential
+    #   hosts:
+    #   - grafana.kbnhvn-project.eu
+
+prometheus:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: traefik
+    hosts: ['prometheus.kbnhvn-project.eu']
+    paths: ['/']
+    # tls:
+    # - secretName: tls-credential
+    #   hosts:
+    #   - prometheus.kbnhvn-project.eu
+...
+  prometheusSpec:
+    externalUrl: "http://prometheus.kbnhvn-project.eu/"
+    routePrefix: /

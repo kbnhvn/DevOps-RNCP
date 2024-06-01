@@ -201,8 +201,7 @@ jobs:
       run: |
         helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
         helm repo update
-        helm upgrade --install monitoring-stack prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
-        kubectl apply -f monitoring/ingressRoute.yaml
+        helm upgrade --install monitoring-stack prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace -f monitoring/values.yaml
 
     - name: Update ClouDNS CNAME for Prometheus
       run: |
@@ -223,5 +222,16 @@ jobs:
           -d "domain-name=kbnhvn-project.eu" \
           -d "record-type=CNAME" \
           -d "host=grafana" \
+          -d "record=${{ env.DNS_NAME }}" \
+          -d "ttl=60"
+
+    - name: Update ClouDNS CNAME for Alertmanager
+      run: |
+        curl -X POST "https://api.cloudns.net/dns/add-record.json" \
+          -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
+          -d "domain-name=kbnhvn-project.eu" \
+          -d "record-type=CNAME" \
+          -d "host=alertmanager" \
           -d "record=${{ env.DNS_NAME }}" \
           -d "ttl=60"

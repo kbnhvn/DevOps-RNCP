@@ -15,17 +15,18 @@ spec:
           email: joel.lourenco.pro@gmail.com
           apiTokenSecretRef:
             name: cloudflare-token
-            key: dns-token
+            key: api-token
       selector:
         dnsZones:
         - 'kbnhvn-devops-project.work'
+        - '*.mydomdom.org'
         
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: app-cert
-  namespace: prod
+  namespace: cert-manager
 spec:
   commonName: app.kbnhvn-devops-project.work
   secretName: app-cert
@@ -40,7 +41,7 @@ spec:
 # kind: Certificate
 # metadata:
 #   name: dev-cert
-#   namespace: dev
+#   namespace: cert-manager
 # spec:
 #   commonName: dev.kbnhvn-devops-project.work
 #   secretName: dev-cert
@@ -54,7 +55,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: prom-cert
-  namespace: monitoring
+  namespace: cert-manager
 spec:
   commonName: prometheus.kbnhvn-devops-project.work
   secretName: prom-cert
@@ -69,7 +70,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: grafana-cert
-  namespace: monitoring
+  namespace: cert-manager
 spec:
   commonName: grafana.kbnhvn-devops-project.work
   secretName: grafana-cert

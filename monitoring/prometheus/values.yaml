@@ -17,15 +17,15 @@ server:
     accessModes:
       - ReadWriteMany
 
-    existingClaim: "prometheus-pv-claim"
+    existingClaim: prometheus-pv-claim
     mountPath: /data
     size: 4Gi
     subPath: prometheus
 
 alertmanager:
-persistence:
-  enabled: true
-  storageClassName: efs-sc
-    - ReadWriteMany
-  size: 50Mi
+  persistence:
+    enabled: true
+    storageClassName: efs-sc
+      - ReadWriteMany
+    size: 1Gi
 

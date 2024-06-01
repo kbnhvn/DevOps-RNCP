@@ -15,7 +15,7 @@ persistence:
   type: pvc
   enabled: true
   storageClassName: efs-sc
-  existingClaim: "grafana-pv-claim"
+  existingClaim: grafana-pv-claim
   accessModes:
     - ReadWriteMany
   size: 10Gi

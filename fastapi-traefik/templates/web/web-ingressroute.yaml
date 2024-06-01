@@ -54,7 +54,7 @@ spec:
     services:
     - name: web-service
       port: {{ .Values.web.service.port }}
-    # middlewares:
+    middlewares:
       - name: traefik-auth-middleware
       # - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/health`)

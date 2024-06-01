@@ -183,7 +183,7 @@ jobs:
       run: |
         curl -X POST "https://api.cloudns.net/dns/add-record.json" \
           -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
           -d "domain-name=kbnhvn-project.eu" \
           -d "record-type=CNAME" \
           -d "host=prod" \
@@ -213,7 +213,7 @@ jobs:
       run: |
         curl -X POST "https://api.cloudns.net/dns/add-record.json" \
           -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
           -d "domain-name=kbnhvn-project.eu" \
           -d "record-type=CNAME" \
           -d "host=prometheus" \
@@ -224,7 +224,7 @@ jobs:
       run: |
         curl -X POST "https://api.cloudns.net/dns/add-record.json" \
           -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ secrets.CLOUDNS_AUTH_ID }}" \
+          -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
           -d "domain-name=kbnhvn-project.eu" \
           -d "record-type=CNAME" \
           -d "host=grafana" \

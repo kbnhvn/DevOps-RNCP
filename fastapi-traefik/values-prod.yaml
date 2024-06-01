@@ -11,7 +11,7 @@ nginx:
   tag: latest
 
 ingress:
-  host: app.kbnhvn-project.eu
+  host: app.kbnhvn-devops-project.work
 
 role:
   name: traefik-role-prod

@@ -164,7 +164,6 @@ jobs:
       run: |
         helm repo add jetstack https://charts.jetstack.io
         helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.14.5 --set installCRDs=true
-        kubectl apply -f certmanager/issuer.yaml
 
     - name: Deploy to Kubernetes (prod)
       if: github.ref == 'refs/heads/master'
@@ -188,16 +187,16 @@ jobs:
         DNS_NAME=$(kubectl get svc traefik-websecure-service --namespace prod -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
         echo "DNS_NAME=${DNS_NAME}" >> $GITHUB_ENV
 
-    - name: Update ClouDNS CNAME for Prod
-      run: |
-        curl -X POST "https://api.cloudns.net/dns/add-record.json" \
-          -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
-          -d "domain-name=kbnhvn-project.eu" \
-          -d "record-type=CNAME" \
-          -d "host=app" \
-          -d "record=${{ env.DNS_NAME }}" \
-          -d "ttl=60"
+    # - name: Update ClouDNS CNAME for Prod
+    #   run: |
+    #     curl -X POST "https://api.cloudns.net/dns/add-record.json" \
+    #       -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
+    #       -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
+    #       -d "domain-name=kbnhvn-project.eu" \
+    #       -d "record-type=CNAME" \
+    #       -d "host=app" \
+    #       -d "record=${{ env.DNS_NAME }}" \
+    #       -d "ttl=60"
 
     - name: Check if monitoring namespace exist, if not, create
       run: |
@@ -209,35 +208,38 @@ jobs:
         helm repo update
         helm upgrade --install monitoring-stack prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace -f monitoring/values.yaml
 
-    - name: Update ClouDNS CNAME for Prometheus
-      run: |
-        curl -X POST "https://api.cloudns.net/dns/add-record.json" \
-          -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
-          -d "domain-name=kbnhvn-project.eu" \
-          -d "record-type=CNAME" \
-          -d "host=prometheus" \
-          -d "record=${{ env.DNS_NAME }}" \
-          -d "ttl=60"
+    # - name: Update ClouDNS CNAME for Prometheus
+    #   run: |
+    #     curl -X POST "https://api.cloudns.net/dns/add-record.json" \
+    #       -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
+    #       -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
+    #       -d "domain-name=kbnhvn-project.eu" \
+    #       -d "record-type=CNAME" \
+    #       -d "host=prometheus" \
+    #       -d "record=${{ env.DNS_NAME }}" \
+    #       -d "ttl=60"
 
-    - name: Update ClouDNS CNAME for Grafana
-      run: |
-        curl -X POST "https://api.cloudns.net/dns/add-record.json" \
-          -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
-          -d "domain-name=kbnhvn-project.eu" \
-          -d "record-type=CNAME" \
-          -d "host=grafana" \
-          -d "record=${{ env.DNS_NAME }}" \
-          -d "ttl=60"
+    # - name: Update ClouDNS CNAME for Grafana
+    #   run: |
+    #     curl -X POST "https://api.cloudns.net/dns/add-record.json" \
+    #       -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
+    #       -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
+    #       -d "domain-name=kbnhvn-project.eu" \
+    #       -d "record-type=CNAME" \
+    #       -d "host=grafana" \
+    #       -d "record=${{ env.DNS_NAME }}" \
+    #       -d "ttl=60"
 
-    - name: Update ClouDNS CNAME for Alertmanager
+    # - name: Update ClouDNS CNAME for Alertmanager
+    #   run: |
+    #     curl -X POST "https://api.cloudns.net/dns/add-record.json" \
+    #       -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
+    #       -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
+    #       -d "domain-name=kbnhvn-project.eu" \
+    #       -d "record-type=CNAME" \
+    #       -d "host=alertmanager" \
+    #       -d "record=${{ env.DNS_NAME }}" \
+    #       -d "ttl=60"
+    - name: Install Clusterissuer and cert
       run: |
-        curl -X POST "https://api.cloudns.net/dns/add-record.json" \
-          -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-          -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
-          -d "domain-name=kbnhvn-project.eu" \
-          -d "record-type=CNAME" \
-          -d "host=alertmanager" \
-          -d "record=${{ env.DNS_NAME }}" \
-          -d "ttl=60"
+        kubectl apply -f certmanager/issuer.yaml

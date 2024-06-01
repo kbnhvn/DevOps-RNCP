@@ -1,28 +1,77 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: cloudns-issuer-prod
+  name: letsencrypt-prod
 spec:
   acme:
     email: joel.lourenco.pro@gmail.com
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: issuer-account-key-prod
+      # Secret resource used to store the account's private key.
+      name: cloudflare-issuer-account-key
     solvers:
-      - http01:
-          ingress:
-            serviceType: ClusterIP
-            ingressClassName: traefik
+    - dns01:
+        cloudflare:
+          email: joel.lourenco.pro@gmail.com
+          apiTokenSecretRef:
+            name: cloudflare
+            key: dns-token
+      selector:
+        dnsZones:
+        - 'kbnhvn-devops-project.work'
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: letsencrypt
+  name: app-cert
+  namespace: prod
 spec:
-  commonName: app.kbnhvn-project.eu
-  secretName: letsencrypt
-  issuerRef:
-    name: cloudns-issuer-prod
-    kind: ClusterIssuer
+  commonName: app.kbnhvn-devops-project.work
+  secretName: app-cert
   dnsNames:
-    - "app.kbnhvn-project.eu" 
+    - app.kbnhvn-devops-project.work
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+---
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: dev-cert
+#   namespace: dev
+# spec:
+#   commonName: dev.kbnhvn-devops-project.work
+#   secretName: dev-cert
+#   dnsNames:
+#     - dev.kbnhvn-devops-project.work
+#   issuerRef:
+#     name: letsencrypt-prod
+#     kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prom-cert
+  namespace: monitoring
+spec:
+  commonName: prometheus.kbnhvn-devops-project.work
+  secretName: prom-cert
+  dnsNames:
+    - prometheus.kbnhvn-devops-project.work
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-cert
+  namespace: monitoring
+spec:
+  commonName: grafana.kbnhvn-devops-project.work
+  secretName: grafana-cert
+  dnsNames:
+    - grafana.kbnhvn-devops-project.work
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

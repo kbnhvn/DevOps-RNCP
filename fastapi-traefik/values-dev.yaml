@@ -19,3 +19,5 @@ role:
 roleBinding:
   name: traefik-role-binding-dev
 
+tls:
+  cert: dev-cert

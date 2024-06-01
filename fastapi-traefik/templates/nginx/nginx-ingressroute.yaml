@@ -12,15 +12,15 @@ spec:
     services:
     - name: nginx-service
       port: {{ .Values.nginx.service.port }}
-    # middlewares:
-      # - name: https-redirect
+    middlewares:
+      - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/login.html`)
     kind: Rule
     services:
     - name: nginx-service
       port: {{ .Values.nginx.service.port }}
-    # middlewares:
-      # - name: https-redirect
+    middlewares:
+      - name: https-redirect
       
-  # tls:
-  #   secretName: letsencrypt
+  tls:
+    secretName: {{ .Values.tls.cert }}

@@ -12,43 +12,43 @@ spec:
     services:
     - name: web-service
       port: {{ .Values.web.service.port }}
-    # middlewares:
-      # - name: https-redirect
+    middlewares:
+      - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/openapi.json`)
     kind: Rule
     services:
     - name: web-service
       port: {{ .Values.web.service.port }}
-    # middlewares:
-      # - name: https-redirect
+    middlewares:
+      - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/login`)
     kind: Rule
     services:
     - name: web-service
       port: {{ .Values.web.service.port }}
-    # middlewares:
-      # - name: https-redirect
+    middlewares:
+      - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/logout`)
     kind: Rule
     services:
     - name: web-service
       port: {{ .Values.web.service.port }}
-    # middlewares:
-      # - name: https-redirect
+    middlewares:
+      - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/forward-auth`)
     kind: Rule
     services:
     - name: web-service
       port: {{ .Values.web.service.port }}
-    # middlewares:
-      # - name: https-redirect
+    middlewares:
+      - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/signup`)
     kind: Rule
     services:
     - name: web-service
       port: {{ .Values.web.service.port }}
-    # middlewares:
-      # - name: https-redirect
+    middlewares:
+      - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/users`)
     kind: Rule
     services:
@@ -56,14 +56,14 @@ spec:
       port: {{ .Values.web.service.port }}
     middlewares:
       - name: traefik-auth-middleware
-      # - name: https-redirect
+      - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/health`)
     kind: Rule
     services:
     - name: web-service
       port: {{ .Values.web.service.port }}
-    # middlewares:
-      # - name: https-redirect
+    middlewares:
+      - name: https-redirect
       
-  # tls:
-  #   secretName: letsencrypt
+  tls:
+    secretName: {{ .Values.tls.cert }}

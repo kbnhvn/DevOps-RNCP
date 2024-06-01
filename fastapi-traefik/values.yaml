@@ -165,7 +165,7 @@ serviceAccount:
 
 dashboardService:
   name: traefik-dashboard-service
-  type: ClusterIP
+  type: LoadBalancer
   port: 8080
   targetPort: 8080
 

@@ -186,7 +186,7 @@ jobs:
           -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
           -d "domain-name=kbnhvn-project.eu" \
           -d "record-type=CNAME" \
-          -d "host=prod" \
+          -d "host=app" \
           -d "record=${{ env.DNS_NAME }}" \
           -d "ttl=60"
 

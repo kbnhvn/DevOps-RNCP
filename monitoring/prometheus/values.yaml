@@ -1,31 +1,23 @@
-server:
-  ingress:
+prometheus:
+  server:
+    ingress:
       enabled: true
       annotations: 
         kubernetes.io/ingress.class: traefik
       hosts:
         - prometheus.kbnhvn-project.eu
       path: /
-      pathType: Prefix
-  service:
-    enabled: true
-    type: ClusterIP
-    servicePort: 80
 
-  persistentVolume:
+grafana:
+  ingress:
     enabled: true
-    accessModes:
-      - ReadWriteMany
+      annotations: 
+        kubernetes.io/ingress.class: traefik
+      hosts:
+        - grafana.kbnhvn-project.eu
+      path: /
 
-    existingClaim: prometheus-pv-claim
-    mountPath: /data
-    size: 4Gi
-    subPath: prometheus
 
-alertmanager:
-  persistence:
-    enabled: true
-    storageClassName: efs-sc
-      - ReadWriteMany
-    size: 1Gi
+
+
 

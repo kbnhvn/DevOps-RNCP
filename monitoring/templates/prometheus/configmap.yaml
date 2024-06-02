@@ -58,8 +58,8 @@ data:
       - job_name: 'traefik-prod'
         static_configs:
           - targets: 
-            - traefik-websecure-service.prod.svc.cluster.local:8080
+            - traefik-dashboard-service.prod.svc.cluster.local:8080
       - job_name: 'traefik-dev'
         static_configs:
           - targets: 
-            - traefik-websecure-service.dev.svc.cluster.local:8080
+            - traefik-dashboard-service.dev.svc.cluster.local:8080

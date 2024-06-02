@@ -182,6 +182,10 @@ jobs:
 
         helm upgrade --install app fastapi-traefik --namespace prod --create-namespace -f fastapi-traefik/values.yaml -f fastapi-traefik/values-prod.yaml
 
+    - name: Deploy Prometheus & Grafana
+      run: |
+        helm upgrade --install monitoring-stack monitoring --namespace monitoring --create-namespace -f monitoring/values.yaml
+
     - name: Create secret with Cloudflare token
       run: |
 

@@ -106,6 +106,7 @@ traefik:
     - "--metrics.prometheus.addServicesLabels=true"
     - "--entryPoints.metrics.address=:8899"
     - "--metrics.prometheus.entryPoint=metrics"
+    - "--metrics.prometheus.headerlabels.label=headerKey"
     # Pour HTTPS
     - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
     - "--certificatesresolvers.letsencrypt.acme.email=joel.lourenco.pro@gmail.com"

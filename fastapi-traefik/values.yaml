@@ -97,7 +97,7 @@ traefik:
     - "--accesslog=true"
     - "--api.dashboard=true"
     - "--providers.kubernetescrd=true"
-    - "—providers.kubernetescrd.allowCrossNamespace=true"
+    - "--providers.kubernetescrd.allowCrossNamespace=true"
     - "--entrypoints.web.Address=:80"
     - "--entrypoints.websecure.Address=:443"
     - "--metrics.prometheus=true"

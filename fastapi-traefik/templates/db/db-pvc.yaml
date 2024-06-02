@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: db-pvc                       
+  name: {{ .Values.pvc.name.postgres }}                       
 spec:
   accessModes:
     - ReadWriteMany                 # Mode d'accès au volume persistant
   storageClassName: efs-sc
-  volumeName: efs-pv-db        
+  volumeName: {{ .Values.pvc.volume.postgres }}        
   resources:
     requests:
       storage: {{ .Values.db.storage.capacity }}                    # Capacité de stockage demandée pour le volume

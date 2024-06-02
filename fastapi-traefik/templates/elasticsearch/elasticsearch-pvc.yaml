@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: elasticsearch-pvc                       
+  name: {{ .Values.pvc.name.elasticsearch }}                       
 spec:
   accessModes:
     - ReadWriteMany                    # Mode d'accès au volume persistant
   storageClassName: efs-sc
-  volumeName: efs-pv-es         
+  volumeName: {{ .Values.pvc.volume.elasticsearch }}         
   resources:
     requests:
       storage: {{ .Values.elasticsearch.storage.capacity }}                    # Capacité de stockage demandée pour le volume

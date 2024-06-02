@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pg-backup
+  namespace: prod
+spec:
+  schedule: "0 2 * * *" # Tous les jours à 2h du matin
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: pg-backup
+            image: postgres:13
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: aws_secret_access_key
+            - name: PGPASSWORD
+              value: "<DB_PASSWORD>"
+            command: ["/bin/sh", "-c"]
+            args:
+              - pg_dump -h db-service.prod.svc.cluster.local -U <DB_USER> fastapi_traefik | gzip > /backup/db_backup.sql.gz
+                && aws s3 cp /backup/db_backup.sql.gz s3://airquality-postgres-backup-767398118919/db_backup_$(date +\%Y-\%m-\%d).sql.gz
+            volumeMounts:
+            - name: backup
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup
+            emptyDir: {}

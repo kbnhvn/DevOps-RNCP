@@ -57,11 +57,15 @@ data:
             target_label: container
       - job_name: 'traefik-prod'
         scheme: https
+        tls_config:
+          insecure_skip_verify: true
         static_configs:
           - targets: 
             - app.kbnhvn-devops-project.work
       - job_name: 'traefik-dev'
         scheme: https
+        tls_config:
+          insecure_skip_verify: true
         static_configs:
           - targets: 
             - dev.kbnhvn-devops-project.work

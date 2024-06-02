@@ -32,7 +32,6 @@ spec:
               mountPath: /etc/prometheus/
             - name: prometheus-storage
               mountPath: /prometheus/
-              subPath: data
       serviceAccountName: prometheus
       securityContext:
         fsGroup: 2000
@@ -44,5 +43,4 @@ spec:
             defaultMode: 420
             name: prometheus-config
         - name: prometheus-storage
-          persistentVolumeClaim:
-            claimName: {{ .Values.pvc.name.prometheus }}
+          emptyDir: {}

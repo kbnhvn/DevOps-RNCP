@@ -1,0 +1,16 @@
+namespace: monitoring
+prometheus:
+  image: prom/prometheus:latest
+  service:
+    port: 9090
+    type: ClusterIP
+  storage:
+    capacity: 5Gi
+
+grafana:
+  image: grafana/grafana:latest
+  service:
+    port: 3000
+    type: ClusterIP
+  storage:
+    capacity: 8Gi

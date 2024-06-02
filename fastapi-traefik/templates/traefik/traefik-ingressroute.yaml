@@ -27,7 +27,7 @@ spec:
     - web
     - websecure
   routes:
-    - match: Host(`{{ .Values.ingress.host }}`) && (PathPrefix(`/metrics`)
+    - match: Host(`{{ .Values.ingress.host }}`) && (PathPrefix(`/metrics`))
       kind: Rule
       services:
       - name: prometheus@internal

@@ -181,22 +181,6 @@ webSecureService:
   port: 443
   targetPort: 443
 
-prometheus:
-  image: prom/prometheus:latest
-  service:
-    port: 9090
-    type: ClusterIP
-  storage:
-    capacity: 5Gi
-
-grafana:
-  image: grafana/grafana:latest
-  service:
-    port: 3000
-    type: ClusterIP
-  storage:
-    capacity: 8Gi
-
 # Les secrets sont stockés dans les credentials Jenkins et sont envoyés via le pipeline
 secrets:
   web:

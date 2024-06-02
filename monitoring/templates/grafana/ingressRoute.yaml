@@ -5,16 +5,12 @@ metadata:
 spec:
   entryPoints:
     - web
-    - websecure
   routes:
-  - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/grafana`)
+  - match: Host(`{{ .Values.grafana.host }}`) && PathPrefix(`/`)
     kind: Rule
     services:
     - name: grafana
       port: {{ .Values.grafana.service.port }}
-    middlewares:
-      - name: traefik-auth-admin-middleware
-      - name: https-redirect
       
-  tls:
-    secretName: {{ .Values.tls.cert }}
+  # tls:
+  #   secretName: {{ .Values.tls.cert }}

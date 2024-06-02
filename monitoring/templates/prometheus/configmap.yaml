@@ -55,3 +55,11 @@ data:
           - source_labels: [__meta_kubernetes_pod_container_name]
             action: replace
             target_label: container
+      - job_name: 'traefik-prod'
+        static_configs:
+          - targets: 
+            - traefik-websecure-service.prod.svc.cluster.local
+      - job_name: 'traefik-dev'
+        static_configs:
+          - targets: 
+            - traefik-websecure-service.dev.svc.cluster.local

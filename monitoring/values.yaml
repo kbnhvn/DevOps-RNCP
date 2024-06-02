@@ -4,7 +4,7 @@
 
 namespace: monitoring
 prometheus:
-  image: prom/prometheus:latests
+  image: prom/prometheus:latest
   service:
     port: 9090
     type: ClusterIP

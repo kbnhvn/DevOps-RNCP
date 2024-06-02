@@ -6,6 +6,7 @@ prometheus:
     type: ClusterIP
   storage:
     capacity: 5Gi
+  host: prometheus.kbnhvn-devops-project.work
 
 grafana:
   image: grafana/grafana:latest
@@ -14,3 +15,4 @@ grafana:
     type: ClusterIP
   storage:
     capacity: 8Gi
+  host: grafana.kbnhvn-devops-project.work

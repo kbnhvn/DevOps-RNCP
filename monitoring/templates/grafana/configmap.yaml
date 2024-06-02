@@ -14,7 +14,7 @@ data:
                 "name": "prometheus",
                 "orgId": 1,
                 "type": "prometheus",
-                "url": "prometheus.{{ .Values.namespace }}.svc.cluster.local",
+                "url": "http://prometheus.{{ .Values.namespace }}.svc.cluster.local:9090",
                 "version": 1
             }
         ]

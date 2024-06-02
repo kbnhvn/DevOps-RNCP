@@ -12,5 +12,3 @@ spec:
     - name: prometheus
       port: {{ .Values.prometheus.service.port }}
       
-  # tls:
-  #   secretName: {{ .Values.tls.cert }}

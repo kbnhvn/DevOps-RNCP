@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: prometheus-pvc                       
+  name: {{ .Values.pvc.name.prometheus }}                      
 spec:
   accessModes:
     - ReadWriteMany
   storageClassName: efs-sc
-  volumeName: efs-pv-prom        
+  volumeName: {{ .Values.pvc.volume.prometheus }}        
   resources:
     requests:
       storage: {{ .Values.prometheus.storage.capacity }}

@@ -45,4 +45,4 @@ spec:
             name: prometheus-config
         - name: prometheus-storage
           persistentVolumeClaim:
-            claimName: prometheus-pvc 
+            claimName: {{ .Values.pvc.name.prometheus }}

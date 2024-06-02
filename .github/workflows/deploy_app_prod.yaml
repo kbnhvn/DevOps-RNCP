@@ -182,22 +182,18 @@ jobs:
 
         helm upgrade --install app fastapi-traefik --namespace prod --create-namespace -f fastapi-traefik/values.yaml -f fastapi-traefik/values-prod.yaml
 
-    - name: Deploy Prometheus & Grafana
-      run: |
-        helm upgrade --install monitoring-stack monitoring --namespace monitoring --create-namespace -f monitoring/values.yaml
-
     - name: Create secret with Cloudflare token
       run: |
 
         # Check if the secret exists
-        # kubectl get secret cloudflare-token --namespace cert-manager
+        kubectl get secret cloudflare-token --namespace cert-manager
 
-        # # If the secret does not exist, create it
-        # if [ $? -ne 0 ]; then
+        # If the secret does not exist, create it
+        if [ $? -ne 0 ]; then
           kubectl create secret generic cloudflare-token --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }} --namespace cert-manager
-        # else
-        #   echo "Secret 'cloudflare-token' already exists in the 'cert-manager' namespace."
-        # fi
+        else
+          echo "Secret 'cloudflare-token' already exists in the 'cert-manager' namespace."
+        fi
 
     - name: Install Clusterissuer and cert
       run: |

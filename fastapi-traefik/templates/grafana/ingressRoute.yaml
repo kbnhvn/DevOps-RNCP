@@ -7,14 +7,14 @@ spec:
     - web
     - websecure
   routes:
-  - match: Host(`{{ .Values.grafana.host }}`) && PathPrefix(`/`)
+  - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/grafana`)
     kind: Rule
     services:
     - name: grafana
       port: {{ .Values.grafana.service.port }}
     middlewares:
-      - name: traefik-auth-middleware
+      - name: traefik-auth-admin-middleware
       - name: https-redirect
       
   tls:
-    secretName: {{ .Values.grafana.tls.cert }}
+    secretName: {{ .Values.tls.cert }}

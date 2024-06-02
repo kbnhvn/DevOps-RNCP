@@ -36,7 +36,7 @@ spec:
       volumes:
         - name: grafana-storage
           persistentVolumeClaim:
-            claimName: grafana-pvc
+            claimName: {{ .Values.pvc.name.grafana }}
         - name: grafana-datasources
           configMap:
               defaultMode: 420

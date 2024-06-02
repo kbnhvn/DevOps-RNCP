@@ -26,6 +26,10 @@ pvc:
   name:
     postgres: db-pvc
     elasticsearch: elasticsearch-pvc
+    prometheus: prometheus-pvc
+    grafana: grafana-pvc
   volume: 
     postgres: efs-pv-db
     elasticsearch: efs-pv-es
+    prometheus: efs-pv-prom
+    grafana: grafana-pvc-grafana

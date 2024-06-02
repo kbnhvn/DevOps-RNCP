@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: grafana-pvc                       
+  name: {{ .Values.pvc.name.grafana }}                      
 spec:
   accessModes:
     - ReadWriteMany
   storageClassName: efs-sc
-  volumeName: efs-pv-grafana       
+  volumeName: {{ .Values.pvc.volume.grafana }}        
   resources:
     requests:
       storage: {{ .Values.grafana.storage.capacity }}

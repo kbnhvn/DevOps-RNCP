@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: grafana
-        image: {{ .Values.prometheus.image }}
+        image: {{ .Values.grafana.image }}
         ports:
         - name: grafana
           containerPort: 3000

@@ -1,0 +1,20 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: prometheus-ingressroute
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+  - match: Host(`{{ .Values.prometheus.host }}`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: prometheus
+      port: {{ .Values.prometheus.service.port }}
+    middlewares:
+      - name: traefik-auth-middleware
+      - name: https-redirect
+      
+  tls:
+    secretName: {{ .Values.prometheus.tls.cert }}

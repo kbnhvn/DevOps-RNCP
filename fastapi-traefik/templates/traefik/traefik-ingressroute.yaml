@@ -13,7 +13,26 @@ spec:
       - name: api@internal
         kind: TraefikService
       middlewares:
-      # - name: dashboard-stripprefix
+      - name: traefik-auth-admin-middleware
+      - name: https-redirect
+  tls:
+    secretName: {{ .Values.tls.cert }}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-metrics-ingressroute
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`{{ .Values.ingress.host }}`) && (PathPrefix(`/metrics`)
+      kind: Rule
+      services:
+      - name: prometheus@internal
+        kind: TraefikService
+      middlewares:
       - name: traefik-auth-admin-middleware
       - name: https-redirect
   tls:

@@ -182,64 +182,19 @@ jobs:
 
         helm upgrade --install app fastapi-traefik --namespace prod --create-namespace -f fastapi-traefik/values.yaml -f fastapi-traefik/values-prod.yaml
 
+    - name: Deploy Prometheus & Grafana
+      run: |
+        helm upgrade --install monitoring-stack monitoring --namespace monitoring --create-namespace -f monitoring/values.yaml
+
+    - name: Create secret with Cloudflare token
+      run: |
+        kubectl create secret generic cloudflare-token --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }} --namespace cert-manager
+
+    - name: Install Clusterissuer and cert
+      run: |
+        kubectl apply -f certmanager/issuer.yaml
+
     - name: Get Load Balancer DNS name
       run: |
         DNS_NAME=$(kubectl get svc traefik-websecure-service --namespace prod -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
         echo "DNS_NAME=${DNS_NAME}" >> $GITHUB_ENV
-
-    # - name: Update ClouDNS CNAME for Prod
-    #   run: |
-    #     curl -X POST "https://api.cloudns.net/dns/add-record.json" \
-    #       -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-    #       -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
-    #       -d "domain-name=kbnhvn-project.eu" \
-    #       -d "record-type=CNAME" \
-    #       -d "host=app" \
-    #       -d "record=${{ env.DNS_NAME }}" \
-    #       -d "ttl=60"
-
-    - name: Check if monitoring namespace exist, if not, create
-      run: |
-        kubectl get namespace monitoring || kubectl create namespace monitoring
-
-    - name: Deploy Prometheus & Grafana
-      run: |
-        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-        helm repo update
-        helm upgrade --install monitoring-stack prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace -f monitoring/values.yaml
-
-    # - name: Update ClouDNS CNAME for Prometheus
-    #   run: |
-    #     curl -X POST "https://api.cloudns.net/dns/add-record.json" \
-    #       -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-    #       -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
-    #       -d "domain-name=kbnhvn-project.eu" \
-    #       -d "record-type=CNAME" \
-    #       -d "host=prometheus" \
-    #       -d "record=${{ env.DNS_NAME }}" \
-    #       -d "ttl=60"
-
-    # - name: Update ClouDNS CNAME for Grafana
-    #   run: |
-    #     curl -X POST "https://api.cloudns.net/dns/add-record.json" \
-    #       -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-    #       -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
-    #       -d "domain-name=kbnhvn-project.eu" \
-    #       -d "record-type=CNAME" \
-    #       -d "host=grafana" \
-    #       -d "record=${{ env.DNS_NAME }}" \
-    #       -d "ttl=60"
-
-    # - name: Update ClouDNS CNAME for Alertmanager
-    #   run: |
-    #     curl -X POST "https://api.cloudns.net/dns/add-record.json" \
-    #       -d "auth-id=${{ secrets.CLOUDNS_AUTH_ID }}" \
-    #       -d "auth-password=${{ secrets.CLOUDNS_AUTH_PASSWORD }}" \
-    #       -d "domain-name=kbnhvn-project.eu" \
-    #       -d "record-type=CNAME" \
-    #       -d "host=alertmanager" \
-    #       -d "record=${{ env.DNS_NAME }}" \
-    #       -d "ttl=60"
-    - name: Install Clusterissuer and cert
-      run: |
-        kubectl apply -f certmanager/issuer.yaml

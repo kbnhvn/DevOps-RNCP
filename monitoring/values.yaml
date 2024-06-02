@@ -1,45 +1,28 @@
-alertmanager:
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: traefik
-    hosts: ['alertmanager.kbnhvn-project.eu']
-    paths: ['/']
-    # tls:
-    # - secretName: tls-credential
-    #   hosts:
-    #   - alertmanager.kbnhvn-project.eu
-...
-  alertmanagerSpec:
-    externalUrl: http://alertmanager.kbnhvn-project.eu/
-    routePrefix: /
+# Default values for Monitoring.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: monitoring
+prometheus:
+  image: prom/prometheus:latests
+  service:
+    port: 9090
+    type: ClusterIP
+  storage:
+    capacity: 5Gi
+  host: prometheus.kbnhvn-devops-project.work
+  tls:
+    cert: prom-cert
 
 grafana:
-  # username is 'admin'
-  adminPassword: prom-operator
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: traefik
-    hosts: ['grafana.kbnhvn-project.eu']
-    path: "/"
-    # tls:
-    # - secretName: tls-credential
-    #   hosts:
-    #   - grafana.kbnhvn-project.eu
+  image: grafana/grafana:latest
+  service:
+    port: 3000
+    type: ClusterIP
+  storage:
+    capacity: 8Gi
+  host: grafana.kbnhvn-devops-project.work
+  tls:
+    cert: grafana-cert
 
-prometheus:
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: traefik
-    hosts: ['prometheus.kbnhvn-project.eu']
-    paths: ['/']
-    # tls:
-    # - secretName: tls-credential
-    #   hosts:
-    #   - prometheus.kbnhvn-project.eu
-...
-  prometheusSpec:
-    externalUrl: "http://prometheus.kbnhvn-project.eu/"
-    routePrefix: /
+

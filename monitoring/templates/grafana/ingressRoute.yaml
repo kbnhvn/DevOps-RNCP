@@ -1,0 +1,20 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-ingressroute
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+  - match: Host(`{{ .Values.grafana.host }}`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: grafana
+      port: {{ .Values.grafana.service.port }}
+    middlewares:
+      - name: traefik-auth-middleware
+      - name: https-redirect
+      
+  tls:
+    secretName: {{ .Values.grafana.tls.cert }}

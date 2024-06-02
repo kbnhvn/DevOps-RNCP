@@ -189,15 +189,15 @@ jobs:
     - name: Create secret with Cloudflare token
       run: |
 
-        # # Check if the secret exists
-        # kubectl get secret cloudflare-token --namespace cert-manager
+        # Check if the secret exists
+        kubectl get secret cloudflare-token --namespace cert-manager
 
-        # # If the secret does not exist, create it
-        # if [ $? -ne 0 ]; then
-           kubectl create secret generic cloudflare-token --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }} --namespace cert-manager
-        # else
-        #   echo "Secret 'cloudflare-token' already exists in the 'cert-manager' namespace."
-        # fi
+        # If the secret does not exist, create it
+        if [ $? -ne 0 ]; then
+          kubectl create secret generic cloudflare-token --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }} --namespace cert-manager
+        else
+          echo "Secret 'cloudflare-token' already exists in the 'cert-manager' namespace."
+        fi
 
     - name: Install Clusterissuer and cert
       run: |
@@ -205,14 +205,8 @@ jobs:
 
     - name: Install Backups
       run: |
-        AWS_ACCESS_KEY_ID_BASE64=$(echo -n "${{ secrets.AWS_ACCESS_KEY_ID }}" | base64)
-        echo "AWS_ACCESS_KEY_ID_BASE64=${AWS_ACCESS_KEY_ID_BASE64}" >> $GITHUB_ENV
-
-        AWS_SECRET_ACCESS_KEY_BASE64=$(echo -n "${{ secrets.AWS_SECRET_ACCESS_KEY }}" | base64)
-        echo "AWS_SECRET_ACCESS_KEY_BASE64=${AWS_SECRET_ACCESS_KEY_BASE64}" >> $GITHUB_ENV
-
-        sed -i "s/<AWS_ID>/${{ env.AWS_ACCESS_KEY_ID_BASE64 }}/g" backups/secret.yaml
-        sed -i "s/<AWS_SECRET>/${{ env.AWS_SECRET_ACCESS_KEY_BASE64 }}/g" backups/secret.yaml
+        sed -i "s/<AWS_ID>/${{ secrets.AWS_ACCESS_KEY_ID_BASE64 }}/g" backups/secret.yaml
+        sed -i "s/<AWS_SECRET>/${{ secrets.AWS_SECRET_ACCESS_KEY_BASE64 }}/g" backups/secret.yaml
         sed -i "s/<DB_USER>/${{ secrets.DB_CREDENTIALS_USR }}/g" backups/db-backup.yaml
         sed -i "s/<DB_PASSWORD>/${{ secrets.DB_CREDENTIALS_PSW }}/g" backups/db-backup.yaml
         

@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: es-backup
+  namespace: prod
+spec:
+  schedule: "0 3 * * *" # Tous les jours à 3h du matin
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: es-backup
+            image: amazonlinux
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: aws_secret_access_key
+            command: ["/bin/sh", "-c"]
+            args:
+              - curl -X PUT "elasticsearch-service.prod.svc.cluster.local/_snapshot/my_backup/snapshot_$(date +\%Y-\%m-\%d)?wait_for_completion=true"
+                && aws s3 cp /backup/es_snapshot.tar.gz s3://airquality-elasticsearch-backup-767398118919/es_snapshot_$(date +\%Y-\%m-\%d).tar.gz
+            volumeMounts:
+            - name: backup
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup
+            emptyDir: {}

@@ -203,6 +203,15 @@ jobs:
       run: |
         kubectl apply -f certmanager/issuer.yaml
 
+    - name: Install Backups
+      run: |
+        sed -i "s/<AWS_ID>/${{ secrets.AWS_ACCESS_KEY_ID_BASE64 }}/g" backups/secret.yaml
+        sed -i "s/<AWS_SECRET>/${{ secrets.AWS_SECRET_ACCESS_KEY_BASE64 }}/g" backups/secret.yaml
+        sed -i "s/<DB_USER>/${{ secrets.DB_CREDENTIALS_USR }}/g" backups/db-backup.yaml
+        sed -i "s/<DB_PASSWORD>/${{ secrets.DB_CREDENTIALS_PSW }}/g" backups/db-backup.yaml
+        
+        kubectl apply -f backups
+
     - name: Get Load Balancer DNS name
       run: |
         DNS_NAME=$(kubectl get svc traefik-websecure-service --namespace prod -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')

@@ -27,4 +27,4 @@ spec:
       volumes:
       - name: elasticsearch-data
         persistentVolumeClaim:
-          claimName: elasticsearch-pvc
+          claimName: {{ .Values.pvc.name.elasticsearch }}

@@ -34,4 +34,4 @@ spec:
       volumes:
       - name: postgres-data     
         persistentVolumeClaim:
-          claimName: db-pvc     # Référence à la réclamation de volume persistant (PVC)
+          claimName: {{ .Values.pvc.name.postgres }}     # Référence à la réclamation de volume persistant (PVC)

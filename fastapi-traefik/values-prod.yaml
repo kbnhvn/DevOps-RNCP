@@ -21,3 +21,11 @@ roleBinding:
 
 tls:
   cert: app-cert
+
+pvc:
+  name:
+    postgres: db-pvc
+    elasticsearch: elasticsearch-pvc
+  volume: 
+    postgres: efs-pv-db
+    elasticsearch: efs-pv-es

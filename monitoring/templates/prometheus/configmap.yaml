@@ -58,8 +58,8 @@ data:
       - job_name: 'traefik-prod'
         static_configs:
           - targets: 
-            - traefik-dashboard-service.prod.svc.cluster.local:8080/metrics
+            - http://traefik-dashboard-service.prod.svc.cluster.local:8080/metrics
       - job_name: 'traefik-dev'
         static_configs:
           - targets: 
-            - traefik-dashboard-service.dev.svc.cluster.local:8080/metrics
+            - http://traefik-dashboard-service.dev.svc.cluster.local:8080/metrics

@@ -184,11 +184,7 @@ jobs:
 
     - name: Deploy Prometheus & Grafana
       run: |
-
-        # helm upgrade --install monitoring-stack monitoring --namespace monitoring --create-namespace -f monitoring/values.yaml
-        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-        helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace -f monitoring/values.yaml
-
+        helm upgrade --install monitoring-stack monitoring --namespace monitoring --create-namespace -f monitoring/values.yaml
 
     - name: Create secret with Cloudflare token
       run: |

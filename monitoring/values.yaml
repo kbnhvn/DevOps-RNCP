@@ -1,44 +1,18 @@
-grafana:
-  # username is 'admin'
-  adminPassword: prom-operator
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: nginx
-    hosts: ['grafana.kbnhvn-devops-project.work']
-    path: "/"
-    tls:
-    - secretName: app-cert
-      hosts:
-      - grafana.kbnhvn-devops-project.work
-
+namespace: monitoring
 prometheus:
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: nginx
-    hosts: ['prometheus.kbnhvn-devops-project.work']
-    paths: ['/']
-    tls:
-    - secretName: app-cert
-      hosts:
-      - prometheus.kbnhvn-devops-project.work
-...
-  prometheusSpec:
-    externalUrl: "https://prometheus.kbnhvn-devops-project.work"
-    routePrefix: /
+  image: prom/prometheus:latest
+  service:
+    port: 9090
+    type: ClusterIP
+  storage:
+    capacity: 5Gi
+  host: prometheus.kbnhvn-devops-project.work
 
-alertmanager:
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: nginx
-    hosts: ['alertmanager.kbnhvn-devops-project.work']
-    paths: ['/']
-    tls:
-    - secretName: app-cert
-      hosts:
-      - alertmanager.kbnhvn-devops-project.work
-  alertmanagerSpec:
-    externalUrl: https://alertmanager.kbnhvn-devops-project.work/
-    routePrefix: 
+grafana:
+  image: grafana/grafana:latest
+  service:
+    port: 3000
+    type: ClusterIP
+  storage:
+    capacity: 8Gi
+  host: grafana.kbnhvn-devops-project.work

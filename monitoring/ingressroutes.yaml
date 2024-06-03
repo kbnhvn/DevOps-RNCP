@@ -1,0 +1,44 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: prometheus-ingressroute
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+  - match: Host(`prometheus.kbnhvn-devops-project.work`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: monitoring-kube-prometheus-prometheus
+      port: 
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-ingressroute
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+  - match: Host(`grafana.kbnhvn-devops-project.work`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: monitoring-grafana
+      port: 
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: alertmanager-ingressroute
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+  - match: Host(`alertmanager.kbnhvn-devops-project.work`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: monitoring-kube-prometheus-alertmanager
+      port: 

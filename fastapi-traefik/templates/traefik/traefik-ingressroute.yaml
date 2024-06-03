@@ -5,7 +5,7 @@ metadata:
 spec:
   entryPoints:
     - web
-    - websecure
+    # - websecure
   routes:
     - match: Host(`{{ .Values.ingress.host }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       kind: Rule
@@ -14,8 +14,8 @@ spec:
         kind: TraefikService
       middlewares:
       - name: traefik-auth-admin-middleware
-  tls:
-    secretName: {{ .Values.tls.cert }}
+  # tls:
+  #   secretName: {{ .Values.tls.cert }}
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -24,12 +24,12 @@ metadata:
 spec:
   entryPoints:
     - web
-    - websecure
+    # - websecure
   routes:
     - match: Host(`{{ .Values.ingress.host }}`) && (PathPrefix(`/metrics`))
       kind: Rule
       services:
       - name: prometheus@internal
         kind: TraefikService
-  tls:
-    secretName: {{ .Values.tls.cert }}
+  # tls:
+  #   secretName: {{ .Values.tls.cert }}

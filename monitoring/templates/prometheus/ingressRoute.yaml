@@ -5,13 +5,13 @@ metadata:
 spec:
   entryPoints:
     - web
-    - websecure
+    # - websecure
   routes:
   - match: Host(`{{ .Values.prometheus.host }}`) && PathPrefix(`/`)
     kind: Rule
     services:
     - name: prometheus
       port: {{ .Values.prometheus.service.port }}
-  tls:
-    secretName: {{ .Values.tls.cert }}
+  # tls:
+  #   secretName: {{ .Values.tls.cert }}
       

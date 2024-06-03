@@ -5,7 +5,7 @@ metadata:
 spec:
   entryPoints:
     - web
-    - websecure
+    # - websecure
   routes:
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`{{ .Values.pgadmin.config.script_name }}`)
     kind: Rule
@@ -15,5 +15,5 @@ spec:
     middlewares:
       - name: traefik-auth-admin-middleware
       
-  tls:
-    secretName: {{ .Values.tls.cert }}
+  # tls:
+  #   secretName: {{ .Values.tls.cert }}

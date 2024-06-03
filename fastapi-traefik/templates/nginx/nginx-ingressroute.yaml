@@ -5,7 +5,7 @@ metadata:
 spec:
   entryPoints:
     - web
-    - websecure
+    # - websecure
   routes:
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/`)
     kind: Rule
@@ -18,5 +18,5 @@ spec:
     - name: nginx-service
       port: {{ .Values.nginx.service.port }}
       
-  tls:
-    secretName: {{ .Values.tls.cert }}
+  # tls:
+  #   secretName: {{ .Values.tls.cert }}

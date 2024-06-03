@@ -16,3 +16,5 @@ grafana:
   storage:
     capacity: 8Gi
   host: grafana.kbnhvn-devops-project.work
+tls:
+  cert: app-cert

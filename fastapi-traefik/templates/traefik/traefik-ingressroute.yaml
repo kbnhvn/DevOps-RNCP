@@ -14,7 +14,6 @@ spec:
         kind: TraefikService
       middlewares:
       - name: traefik-auth-admin-middleware
-      - name: https-redirect
   tls:
     secretName: {{ .Values.tls.cert }}
 ---
@@ -32,7 +31,5 @@ spec:
       services:
       - name: prometheus@internal
         kind: TraefikService
-      middlewares:
-      - name: https-redirect
   tls:
     secretName: {{ .Values.tls.cert }}

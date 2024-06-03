@@ -186,6 +186,10 @@ jobs:
       run: |
         helm upgrade --install monitoring-stack monitoring --namespace monitoring --create-namespace -f monitoring/values.yaml
 
+    - name: Deploy Kube-state-metrics
+      run: |
+        kubectl apply -f tools
+
     - name: Create secret with Cloudflare token
       run: |
 

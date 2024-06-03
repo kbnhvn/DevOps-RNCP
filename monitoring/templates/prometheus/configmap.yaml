@@ -153,7 +153,7 @@ data:
         static_configs:
           - targets: 
             - monitoring-kube-prometheus-kubelet.kube-system.svc.cluster.local:10250
-      - job_name: 'kube-state-metrics'
+      - job_name: 'kube-state-metrics2'
         static_configs:
           - targets: 
             - kube-state-metrics-service.kube-system.svc.cluster.local:8080

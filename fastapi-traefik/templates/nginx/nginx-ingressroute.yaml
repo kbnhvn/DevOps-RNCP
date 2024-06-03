@@ -16,7 +16,6 @@ spec:
     kind: Rule
     services:
     - name: nginx-service
-      port: {{ .Values.nginx.service.port }}
-      
-  # tls:
-  #   secretName: {{ .Values.tls.cert }}
+      port: {{ .Values.nginx.service.port }}     
+  tls:
+    secretName: {{ .Values.tls.cert }}

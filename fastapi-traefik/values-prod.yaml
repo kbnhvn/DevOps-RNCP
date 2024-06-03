@@ -20,7 +20,7 @@ roleBinding:
   name: traefik-role-binding-prod
 
 tls:
-  cert: app-cert
+  cert: global-cert
 
 pvc:
   name:

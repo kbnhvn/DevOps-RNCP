@@ -13,7 +13,6 @@ spec:
     - name: kibana-service
       port: {{ .Values.kibana.service.port }}
     middlewares:
-      - name: traefik-auth-middleware
-      
-  # tls:
-  #   secretName: {{ .Values.tls.cert }}
+      - name: traefik-auth-middleware      
+  tls:
+    secretName: {{ .Values.tls.cert }}

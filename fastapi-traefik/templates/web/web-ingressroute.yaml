@@ -48,7 +48,6 @@ spec:
     kind: Rule
     services:
     - name: web-service
-      port: {{ .Values.web.service.port }}
-      
-  # tls:
-  #   secretName: {{ .Values.tls.cert }}
+      port: {{ .Values.web.service.port }}    
+  tls:
+    secretName: {{ .Values.tls.cert }}

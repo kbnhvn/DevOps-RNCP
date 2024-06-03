@@ -1,18 +1,44 @@
-namespace: monitoring
-prometheus:
-  image: prom/prometheus:latest
-  service:
-    port: 9090
-    type: ClusterIP
-  storage:
-    capacity: 5Gi
-  host: prometheus.kbnhvn-devops-project.work
-
 grafana:
-  image: grafana/grafana:latest
-  service:
-    port: 3000
-    type: ClusterIP
-  storage:
-    capacity: 8Gi
-  host: grafana.kbnhvn-devops-project.work
+  # username is 'admin'
+  adminPassword: prom-operator
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: traefik
+    hosts: ['grafana.kbnhvn-devops-project.work']
+    path: "/"
+    tls:
+    - secretName: app-cert
+      hosts:
+      - grafana.kbnhvn-devops-project.work
+
+prometheus:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: traefik
+    hosts: ['prometheus.kbnhvn-devops-project.work']
+    paths: ['/']
+    tls:
+    - secretName: app-cert
+      hosts:
+      - prometheus.kbnhvn-devops-project.work
+...
+  prometheusSpec:
+    externalUrl: "https://prometheus.kbnhvn-devops-project.work"
+    routePrefix: /
+
+alertmanager:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: traefik
+    hosts: ['alertmanager.kbnhvn-devops-project.work']
+    paths: ['/']
+    tls:
+    - secretName: app-cert
+      hosts:
+      - alertmanager.kbnhvn-devops-project.work
+  alertmanagerSpec:
+    externalUrl: https://alertmanager.kbnhvn-devops-project.work/
+    routePrefix: 

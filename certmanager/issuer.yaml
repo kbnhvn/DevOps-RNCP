@@ -50,32 +50,18 @@ spec:
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: prom-cert
-  namespace: cert-manager
-spec:
-  commonName: prometheus.kbnhvn-devops-project.work
-  secretName: prom-cert
-  dnsNames:
-    - prometheus.kbnhvn-devops-project.work
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
 
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: grafana-cert
+  name: global-cert
   namespace: cert-manager
 spec:
-  commonName: grafana.kbnhvn-devops-project.work
-  secretName: grafana-cert
+  commonName: app.kbnhvn-devops-project.work
+  secretName: global-cert
   dnsNames:
-    - grafana.kbnhvn-devops-project.work
+    - app.kbnhvn-devops-project.work
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

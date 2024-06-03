@@ -5,17 +5,15 @@ metadata:
   labels:
     name: prometheus-config
 data:
-  prometheus.rules: |-
+  rules.yml: |-
     groups:
-    - name: sample alert
-      rules:
-      - alert: High Pod Memory
-        expr: sum(container_memory_usage_bytes) > 1
-        for: 1m
-        labels:
-          severity: slack
-        annotations:
-          summary: High Memory Usage
+      - name: sre alerts on traefik 
+        rules:
+          - alert: TooManyRequests
+            expr: avg(traefik_service_open_connections) > 50
+            for: 1m
+            labels:
+              severity: critical
   prometheus.yml: |-
     global:
       scrape_interval: 5s

@@ -121,10 +121,6 @@ data:
         - source_labels: [__meta_kubernetes_service_name]
           action: replace
           target_label: kubernetes_name
-
-
-
-
       - job_name: 'traefik-prod'
         scheme: https
         tls_config:
@@ -139,3 +135,27 @@ data:
         static_configs:
           - targets: 
             - dev.kbnhvn-devops-project.work
+      - job_name: 'kube-controller-manager'
+        static_configs:
+          - targets: 
+            - monitoring-kube-prometheus-kube-controller-manager.kube-system.svc.cluster.local:10257
+      - job_name: 'kube-etcd'
+        static_configs:
+          - targets: 
+            - monitoring-kube-prometheus-kube-etcd.kube-system.svc.cluster.local:2381
+      - job_name: 'kube-proxy'
+        static_configs:
+          - targets: 
+            - monitoring-kube-prometheus-kube-proxy.kube-system.svc.cluster.local:10249
+      - job_name: 'kube-scheduler'
+        static_configs:
+          - targets: 
+            - monitoring-kube-prometheus-kube-scheduler.kube-system.svc.cluster.local:10257
+      - job_name: 'kube-kubelet'
+        static_configs:
+          - targets: 
+            - monitoring-kube-prometheus-kubelet.kube-system.svc.cluster.local:10250
+      - job_name: 'kube-state-metrics'
+        static_configs:
+          - targets: 
+            - kube-state-metrics-service.kube-system.svc.cluster.local:8080

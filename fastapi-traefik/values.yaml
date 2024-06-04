@@ -99,6 +99,7 @@ traefik:
     - "--providers.kubernetescrd=true"
     - "--entrypoints.web.Address=:80"
     - "--entrypoints.websecure.Address=:443"
+    - "--entrypoints.websecure.http.tls"
     # Pour Prometheus
     - "--metrics.prometheus=true"
     - "--metrics.prometheus.buckets=0.1,0.3,1.2,5.0"
@@ -106,12 +107,6 @@ traefik:
     - "--metrics.prometheus.addServicesLabels=true"
     - "--entryPoints.metrics.address=:8899"
     - "--metrics.prometheus.entryPoint=metrics"
-    # Pour HTTPS
-    - "--entrypoints.websecure.http.tls.certResolver=letsencrypt"
-    - "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
-    - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
-    - "--certificatesresolvers.letsencrypt.acme.email=joel.lourenco.pro@gmail.com"
-    - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
   ports:
     web:
       containerPort: 80

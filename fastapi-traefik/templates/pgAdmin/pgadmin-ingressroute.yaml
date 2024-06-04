@@ -14,4 +14,4 @@ spec:
     middlewares:
       - name: traefik-auth-admin-middleware
   tls:
-    certResolver: {{ .Values.tls.cert }}
+    secretName: {{ .Values.tls.cert }}

@@ -12,5 +12,5 @@ spec:
     - name: grafana
       port: {{ .Values.grafana.service.port }}
   tls:
-    certResolver: {{ .Values.tls.cert }}
+    secretName: {{ .Values.tls.cert }}
       

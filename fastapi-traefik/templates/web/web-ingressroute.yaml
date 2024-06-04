@@ -49,4 +49,4 @@ spec:
     - name: web-service
       port: {{ .Values.web.service.port }}    
   tls:
-    certResolver: {{ .Values.tls.cert }}
+    secretName: {{ .Values.tls.cert }}

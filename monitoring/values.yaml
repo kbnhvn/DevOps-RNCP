@@ -17,4 +17,4 @@ grafana:
     capacity: 8Gi
   host: grafana.kbnhvn-devops-project.work
 tls:
-  cert: letsencrypt
+  cert: cluster-cert

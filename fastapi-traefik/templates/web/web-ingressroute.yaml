@@ -4,7 +4,7 @@ metadata:
   name: app-ingressroute-web
 spec:
   entryPoints:
-    - web
+    # - web
     - websecure
   routes:
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/docs`)

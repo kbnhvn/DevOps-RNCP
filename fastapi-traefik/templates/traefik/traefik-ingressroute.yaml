@@ -4,7 +4,7 @@ metadata:
   name: traefik-ingressroute
 spec:
   entryPoints:
-    - web
+    # - web
     - websecure
   routes:
     - match: Host(`{{ .Values.ingress.host }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
@@ -23,7 +23,7 @@ metadata:
   name: traefik-metrics-ingressroute
 spec:
   entryPoints:
-    - web
+    # - web
     - websecure
   routes:
     - match: Host(`{{ .Values.ingress.host }}`) && (PathPrefix(`/metrics`))

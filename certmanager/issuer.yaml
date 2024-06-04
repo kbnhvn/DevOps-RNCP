@@ -19,7 +19,7 @@ spec:
       selector:
         dnsZones:
         - 'kbnhvn-devops-project.work'
-        - '*.mydomdom.org'
+        - '*.kbnhvn-devops-project.work'
 
 ---
 # apiVersion: cert-manager.io/v1

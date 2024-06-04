@@ -107,9 +107,9 @@ traefik:
     - "--entryPoints.metrics.address=:8899"
     - "--metrics.prometheus.entryPoint=metrics"
     # Pour HTTPS
-    - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
-    - "--certificatesresolvers.letsencrypt.acme.email=joel.lourenco.pro@gmail.com"
-    - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
+    # - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+    # - "--certificatesresolvers.letsencrypt.acme.email=joel.lourenco.pro@gmail.com"
+    # - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
     # - "--certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint=websecure"
   ports:
     web:

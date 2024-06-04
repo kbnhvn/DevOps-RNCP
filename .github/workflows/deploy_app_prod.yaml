@@ -190,22 +190,22 @@ jobs:
       run: |
         kubectl apply -f tools
 
-    # - name: Create secret with Cloudflare token
-    #   run: |
+    - name: Create secret with Cloudflare token
+      run: |
 
-    #     # Check if the secret exists
-    #     kubectl get secret cloudflare-token --namespace cert-manager
+        # Check if the secret exists
+        kubectl get secret cloudflare-token --namespace cert-manager
 
-    #     # If the secret does not exist, create it
-    #     if [ $? -ne 0 ]; then
-    #       kubectl create secret generic cloudflare-token --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }} --namespace cert-manager
-    #     else
-    #       echo "Secret 'cloudflare-token' already exists in the 'cert-manager' namespace."
-    #     fi
+        # If the secret does not exist, create it
+        if [ $? -ne 0 ]; then
+          kubectl create secret generic cloudflare-token --from-literal=api-token=${{ secrets.CLOUDFLARE_API_TOKEN }} --namespace cert-manager
+        else
+          echo "Secret 'cloudflare-token' already exists in the 'cert-manager' namespace."
+        fi
 
-    # - name: Install Clusterissuer and cert
-    #   run: |
-    #     kubectl apply -f certmanager/issuer.yaml
+    - name: Install Clusterissuer and cert
+      run: |
+        kubectl apply -f certmanager/issuer.yaml
 
     - name: Install Backups
       run: |

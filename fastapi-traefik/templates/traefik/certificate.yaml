@@ -1,0 +1,28 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cluster-cert
+  namespace: {{ .Values.namespace }}
+spec:
+  commonName: kbnhvn-devops-project.work
+  secretName: cluster-cert
+  dnsNames:
+    - kbnhvn-devops-project.work
+    - app.kbnhvn-devops-project.work
+    - grafana.kbnhvn-devops-project.work
+    - prometheus.kbnhvn-devops-project.work
+    - dev.kbnhvn-devops-project.work
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: {{ .Values.namespace }}
+spec:
+  certificates:
+    - secretName: cluster-cert
+  defaultCertificate:
+    secretName: cluster-cert

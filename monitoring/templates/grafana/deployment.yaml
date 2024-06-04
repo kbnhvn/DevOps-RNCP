@@ -35,8 +35,7 @@ spec:
             readOnly: false
       volumes:
         - name: grafana-storage
-          persistentVolumeClaim:
-            claimName: grafana-pvc
+          emptyDir: {}
         - name: grafana-datasources
           configMap:
               defaultMode: 420

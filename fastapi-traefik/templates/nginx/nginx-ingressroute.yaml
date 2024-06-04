@@ -4,7 +4,6 @@ metadata:
   name: nginx-ingressroute
 spec:
   entryPoints:
-    - web
     - websecure
   routes:
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/`)
@@ -12,15 +11,11 @@ spec:
     services:
     - name: nginx-service
       port: {{ .Values.nginx.service.port }}
-    middlewares:
-      - name: https-redirect
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`/login.html`)
     kind: Rule
     services:
     - name: nginx-service
       port: {{ .Values.nginx.service.port }}
-    middlewares:
-      - name: https-redirect
       
   tls:
     secretName: {{ .Values.tls.cert }}

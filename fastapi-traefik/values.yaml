@@ -97,15 +97,16 @@ traefik:
     - "--accesslog=true"
     - "--api.dashboard=true"
     - "--providers.kubernetescrd=true"
-    - "--providers.kubernetescrd.allowCrossNamespace=true"
     - "--entrypoints.web.Address=:80"
     - "--entrypoints.websecure.Address=:443"
+    - "--entrypoints.websecure.http.tls"
+    # Pour Prometheus
     - "--metrics.prometheus=true"
-    # Pour HTTPS
-    - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
-    - "--certificatesresolvers.letsencrypt.acme.email=joel.lourenco.pro@gmail.com"
-    - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
-    - "--certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint=web"
+    - "--metrics.prometheus.buckets=0.1,0.3,1.2,5.0"
+    - "--metrics.prometheus.addEntryPointsLabels=true"
+    - "--metrics.prometheus.addServicesLabels=true"
+    - "--entryPoints.metrics.address=:8899"
+    - "--metrics.prometheus.entryPoint=metrics"
   ports:
     web:
       containerPort: 80

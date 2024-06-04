@@ -11,8 +11,6 @@ prometheus:
   storage:
     capacity: 5Gi
   host: prometheus.kbnhvn-devops-project.work
-  tls:
-    cert: prom-cert
 
 grafana:
   image: grafana/grafana:latest
@@ -22,7 +20,8 @@ grafana:
   storage:
     capacity: 8Gi
   host: grafana.kbnhvn-devops-project.work
-  tls:
-    cert: grafana-cert
+  
+tls:
+  cert: cluster-cert
 
 

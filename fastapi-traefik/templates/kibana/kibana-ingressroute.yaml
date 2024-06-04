@@ -4,7 +4,6 @@ metadata:
   name: kibana-ingressroute
 spec:
   entryPoints:
-    - web
     - websecure
   routes:
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`{{ .Values.kibana.config.server_basepath }}`)
@@ -14,7 +13,6 @@ spec:
       port: {{ .Values.kibana.service.port }}
     middlewares:
       - name: traefik-auth-middleware
-      - name: https-redirect
       
   tls:
     secretName: {{ .Values.tls.cert }}

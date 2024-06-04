@@ -4,7 +4,6 @@ metadata:
   name: prometheus-ingressroute
 spec:
   entryPoints:
-    - web
     - websecure
   routes:
   - match: Host(`{{ .Values.prometheus.host }}`) && PathPrefix(`/`)
@@ -12,9 +11,5 @@ spec:
     services:
     - name: prometheus
       port: {{ .Values.prometheus.service.port }}
-    middlewares:
-      - name: traefik-auth-middleware
-      - name: https-redirect
-      
   tls:
-    secretName: {{ .Values.prometheus.tls.cert }}
+    secretName: {{ .Values.tls.cert }}

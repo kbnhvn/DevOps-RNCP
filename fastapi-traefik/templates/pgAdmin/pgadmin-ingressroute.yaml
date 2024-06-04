@@ -4,7 +4,6 @@ metadata:
   name: pgadmin-ingressroute
 spec:
   entryPoints:
-    - web
     - websecure
   routes:
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`{{ .Values.pgadmin.config.script_name }}`)
@@ -14,7 +13,6 @@ spec:
       port: {{ .Values.pgadmin.service.port }}
     middlewares:
       - name: traefik-auth-admin-middleware
-      - name: https-redirect
       
   tls:
     secretName: {{ .Values.tls.cert }}

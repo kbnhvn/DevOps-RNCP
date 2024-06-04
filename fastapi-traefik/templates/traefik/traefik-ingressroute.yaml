@@ -14,7 +14,7 @@ spec:
       middlewares:
       - name: traefik-auth-admin-middleware
   tls:
-    secretName: {{ .Values.tls.cert }}
+    certResolver: {{ .Values.tls.cert }}
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -30,4 +30,4 @@ spec:
       - name: prometheus@internal
         kind: TraefikService
   tls:
-    secretName: {{ .Values.tls.cert }}
+    certResolver: {{ .Values.tls.cert }}

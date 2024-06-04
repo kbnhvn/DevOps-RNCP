@@ -46,6 +46,7 @@ spec:
   commonName: kbnhvn-devops-project.work
   secretName: cluster-cert
   dnsNames:
+    - kbnhvn-devops-project.work
     - app.kbnhvn-devops-project.work
     - grafana.kbnhvn-devops-project.work
     - prometheus.kbnhvn-devops-project.work

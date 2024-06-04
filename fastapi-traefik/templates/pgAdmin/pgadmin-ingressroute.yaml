@@ -4,7 +4,6 @@ metadata:
   name: pgadmin-ingressroute
 spec:
   entryPoints:
-    # - web
     - websecure
   routes:
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`{{ .Values.pgadmin.config.script_name }}`)

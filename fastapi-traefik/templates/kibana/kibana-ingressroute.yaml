@@ -4,7 +4,6 @@ metadata:
   name: kibana-ingressroute
 spec:
   entryPoints:
-    # - web
     - websecure
   routes:
   - match: Host(`{{ .Values.ingress.host }}`) && PathPrefix(`{{ .Values.kibana.config.server_basepath }}`)

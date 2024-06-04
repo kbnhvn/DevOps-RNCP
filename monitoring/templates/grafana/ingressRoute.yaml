@@ -4,7 +4,6 @@ metadata:
   name: grafana-ingressroute
 spec:
   entryPoints:
-    # - web
     - websecure
   routes:
   - match: Host(`{{ .Values.grafana.host }}`) && PathPrefix(`/`)

@@ -4,7 +4,6 @@ metadata:
   name: prometheus-ingressroute
 spec:
   entryPoints:
-    # - web
     - websecure
   routes:
   - match: Host(`{{ .Values.prometheus.host }}`) && PathPrefix(`/`)

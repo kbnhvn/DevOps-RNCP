@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 data:
-  schedule: "0 0 */2 * *"     # Un jour ,sur deux a minuit
+  schedule: "*/10 * * * *"     # Un jour ,sur deux a minuit
   repository: kbnhvn/datafetcher
   tag: latest
   index_name: qualite_air

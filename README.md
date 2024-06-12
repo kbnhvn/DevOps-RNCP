@@ -30,35 +30,18 @@ https://1drv.ms/w/s!ArK3W0SU4bw29gz5Em1yGjNG07H8?e=N2dZ83
 ### Image docker du serveur web :
 - kbnhvn/webserver : https://hub.docker.com/r/kbnhvn/webserver
 
-## Serveur :
-Le cluster k3s et jenkins tournent sur un EC2 AWS.
+## Infrastructure :
+Cette application est déployée sur le **cloud AWS** au sein d'un **cluster EKS**.
+Son déploiement est automatisé à l'aide de l'outil **Terraform** et comporte son propre pipeline de CI/CD. Pour une préocupation de clarté et de maintenabilité, j'ai fais le choix d'isoler l'aplicatif de l'infrastructure. Ainsi le code source relatif à l'infrastructure possède son propre repository GitHub : https://github.com/kbnhvn/Terraform-RNCP
 
-Pour accéder à l'environnement **dev** (basé sur la branche ```develop```) :
-- https://dev.fastapi-traefik.cloudns.ch
-  
-Pour accéder à l'environnement **prod** (basé sur la branche ```master```) :
-- https://prod.fastapi-traefik.cloudns.ch
-  
-Pour accéder à **jenkins** :
-- http://15.237.207.19:9090
+## Déploiement continu :
+Le déploiement continu de cette application utilise un workflow GitHub Actions, scindé en deux pipelines : 
+- Un pipeline pour le déploiement en environnement de développement *dev*
+- Un pipeline pour le déploiement en environnement de production *prod*
+Ces deux pipelines permettent les étapes de **build/run/test/push** des images dockers des différents microservices, avant le déploiement de l'application sur leur environnement respectif avec **Helm**.
+Ce déploiement comprend également l'ajout d'un environnement de supervision avec **Prometheus** et **Grafana**, ainsi que **cert-manager** pour la gestion des **certificats SSL**.
 
-## Instructions d'installation :
-### Afin d'installer ce projet en local :
-- Télécharger la dernière version de ce projet [ICI](https://github.com/kbnhvn/FastAPI-Traefik/releases)
-- Installer **K3S** qui est une version légère de Kubernetes ansi que **Helm**
-- Modifier le fichier ```custom_values.yaml``` par les valeurs de votre choix. **Attention**, ces valeurs doivent être encodées en base64 (vous pouvez utiliser [ce site](https://www.base64decode.org/))
-- Créer les namespaces pour les environnements **dev** et **prod** : ```kubectl create namespace dev```, ```kubectl create namespace prod```
-- Lancer la commande : ```helm upgrade --install app fastapi-traefik --values=./fastapi-traefik/values.yml -f ./fastapi-traefik/values-dev.yaml -f ./custom_values.yaml --namespace dev``` pour installer l'environement **dev** du projet
-- Lancer la commande : ```helm upgrade --install app fastapi-traefik --values=./fastapi-traefik/values.yml -f ./fastapi-traefik/values-prod.yaml -f ./custom_values.yaml --namespace prod``` pour installer l'environement **prod** du projet
-
-### Méthode automatique :
-- Télécharger la dernière version de ce projet [ICI](https://github.com/kbnhvn/FastAPI-Traefik/releases)
-- Modifier le fichier ```custom_values.yaml``` par les valeurs de votre choix. **Attention**, ces valeurs doivent être encodées en base64 (vous pouvez utiliser [ce site](https://www.base64decode.org/))
-- Exécuter la commande : ```sudo chmod +x ./install_and_deploy.sh```
-- Lancer le script : ```install_and_deploy.sh```
-
-### Test du projet en local :
-Suite à l'installation, l'environnement **dev** sera visible sur [https://dev.localhost/](https://dev.localhost/) et **prod** sera visible sur [https://prod.localhost/](https://prod.localhost/).
+**Le déploiement en production nécéssite un étape de validation manuelle**
 
 ## Notes et instructions de dev :
 ### Pour commencer :

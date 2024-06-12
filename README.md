@@ -1,4 +1,4 @@
-# FastAPI-Traefik
+# DATA-AIR
 
 ## Présentation
 La qualité de l'air est une préoccupation croissante pour la santé publique. Disposer d'un outil permettant de visualiser les données de qualité de l'air par région, ville ou polluant offre une valeur ajoutée significative pour le grand public et les décideurs. 

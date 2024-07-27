@@ -14,9 +14,6 @@ spec:
       labels:
         app: db                
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       containers:
       - name: db
         image: "{{ .Values.db.repository }}:{{ .Values.db.tag }}"  # Image Docker utilisée pour les conteneurs

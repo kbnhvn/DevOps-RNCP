@@ -146,19 +146,15 @@ jobs:
         method: kubeconfig
         kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-    - name: Set up WireGuard
-      uses: egor-tensin/setup-wireguard@v1.1.0
-      with:
-        endpoint: '${{ secrets.ENDPOINT }}'
-        endpoint_public_key: '${{ secrets.ENDPOINT_PUBLIC }}'
-        ips: '${{ secrets.IPS }}'
-        allowed_ips: '${{ secrets.ALLOWED_IPS }}'
-        private_key: '${{ secrets.PRIVATE }}'
-        preshared_key: '${{ secrets.PRESHARED }}'
-
-    - name: Update kubeconfig
+    - name: Install WireGuard
       run: |
-        aws eks update-kubeconfig --region eu-west-3 --name kbnhvn-cluster
+        sudo apt-get update
+        sudo apt-get install -y wireguard
+
+    - name: Configure WireGuard
+      run: |
+        echo "${{ secrets.WG_CONFIG }}" > wg0.conf
+        sudo wg-quick up wg0.conf
 
     - name: Request manual approval before production deployment
       run: |

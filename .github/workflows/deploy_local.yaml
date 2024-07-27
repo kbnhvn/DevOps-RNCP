@@ -149,7 +149,7 @@ jobs:
     - name: Install WireGuard
       run: |
         sudo apt-get update
-        sudo apt-get install -y wireguard
+        sudo apt-get install -y wireguard resolvconf
 
     - name: Configure WireGuard
       run: |

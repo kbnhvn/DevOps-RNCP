@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.pvc.name.postgres }}                       
 spec:
   accessModes:
-    - ReadWriteMany                 # Mode d'accès au volume persistant
+    - ReadWriteOnce                 # Mode d'accès au volume persistant
   storageClassName: local-path
   volumeName: {{ .Values.pvc.volume.postgres }}        
   resources:

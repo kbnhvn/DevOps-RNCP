@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany                 # Mode d'accès au volume persistant
-  storageClassName: efs-sc
+  storageClassName: local-path
   volumeName: {{ .Values.pvc.volume.postgres }}        
   resources:
     requests:

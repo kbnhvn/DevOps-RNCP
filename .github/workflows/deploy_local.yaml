@@ -154,6 +154,7 @@ jobs:
     - name: Configure WireGuard
       run: |
         echo "${{ secrets.WG_CONFIG }}" > wg0.conf
+        sudo mv wg0.conf /etc/wireguard/
         sudo wg-quick up wg0.conf
 
     - name: Request manual approval before production deployment

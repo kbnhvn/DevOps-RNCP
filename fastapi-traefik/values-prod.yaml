@@ -24,8 +24,8 @@ tls:
 
 pvc:
   name:
-    postgres: db-pvc
-    elasticsearch: elasticsearch-pvc
+    postgres: local-path-pvc
+    elasticsearch: local-path-pvc
   volume: 
-    postgres: efs-pv-db
-    elasticsearch: efs-pv-es
+    postgres: pv-db
+    elasticsearch: pv-es
